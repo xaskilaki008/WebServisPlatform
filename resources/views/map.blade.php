@@ -51,10 +51,8 @@
     <div id="info-panel">
         <h2>Информация о пляже</h2>
         <p><strong>Название:</strong> <span id="info-name">Выберите пляж на карте</span></p>
-        <p><strong>Номер:</strong> <span id="info-num">-</span></p>
-        <p><strong>Площадь, га:</strong> <span id="info-area">-</span></p>
-        <p><strong>Береговая линия, м:</strong> <span id="info-shoreline">-</span></p>
-        <p><strong>Зона купания, м:</strong> <span id="info-swimzone">-</span></p>
+        <p><strong>Номер:</strong> <span id="info-number">-</span></p>
+        <p><strong>Уровень волнения:</strong> <span id="info-wave-level">-</span></p>
     </div>
     <div id="map"></div>
 
@@ -62,47 +60,48 @@
     <script>
         const map = L.map('map').setView([44.61, 33.52], 11);
         const infoName = document.getElementById('info-name');
-        const infoNum = document.getElementById('info-num');
-        const infoArea = document.getElementById('info-area');
-        const infoShoreline = document.getElementById('info-shoreline');
-        const infoSwimzone = document.getElementById('info-swimzone');
+        const infoNumber = document.getElementById('info-number');
+        const infoWaveLevel = document.getElementById('info-wave-level');
 
-        function updateInfoPanel(properties = {}) {
-            infoName.textContent = properties.name || 'Без названия';
-            infoNum.textContent = properties.num ?? '-';
-            infoArea.textContent = properties.area_ha ?? '-';
-            infoShoreline.textContent = properties.shoreline_m ?? '-';
-            infoSwimzone.textContent = properties.swimzone_m ?? '-';
+        function updateInfoPanel(beach = {}) {
+            infoName.textContent = beach.name || 'Без названия';
+            infoNumber.textContent = beach.number ?? '-';
+            infoWaveLevel.textContent = beach.wave_level ?? '-';
         }
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
 
-        fetch('/sevastopol_beaches.geojson')
+        fetch('/api/beaches')
             .then(response => response.json())
             .then(data => {
-                const beachesLayer = L.geoJSON(data, {
-                    onEachFeature: function (feature, layer) {
-                        const p = feature.properties;
-                        layer.bindPopup(
-                            '<b>' + (p.name || 'Без названия') + '</b><br>' +
-                            'Номер: ' + (p.num ?? '-') + '<br>' +
-                            'Площадь, га: ' + (p.area_ha ?? '-') + '<br>' +
-                            'Береговая линия, м: ' + (p.shoreline_m ?? '-') + '<br>' +
-                            'Зона купания, м: ' + (p.swimzone_m ?? '-')
-                        );
-                        layer.on('click', function () {
-                            updateInfoPanel(p);
-                        });
-                    }
-                }).addTo(map);
+                const markers = [];
 
-                map.fitBounds(beachesLayer.getBounds());
+                data.forEach(beach => {
+                    const marker = L.marker([beach.latitude, beach.longitude])
+                        .addTo(map)
+                        .bindPopup(
+                            '<b>' + (beach.name || 'Без названия') + '</b><br>' +
+                            'Номер: ' + (beach.number ?? '-') + '<br>' +
+                            'Уровень волнения: ' + (beach.wave_level ?? '-')
+                        );
+
+                    marker.on('click', function () {
+                        updateInfoPanel(beach);
+                    });
+
+                    markers.push(marker);
+                });
+
+                if (markers.length > 0) {
+                    const group = L.featureGroup(markers);
+                    map.fitBounds(group.getBounds());
+                }
             })
             .catch(error => {
-                console.error('Ошибка загрузки GeoJSON:', error);
-                alert('Не удалось загрузить файл sevastopol_beaches.geojson');
+                console.error('Ошибка загрузки пляжей:', error);
+                alert('Не удалось загрузить данные пляжей');
             });
     </script>
 </body>
