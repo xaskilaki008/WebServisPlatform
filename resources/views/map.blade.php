@@ -67,7 +67,8 @@
 
         .nav-button,
         .action-button,
-        .back-button {
+        .back-button,
+        .filter-chip {
             border: 0;
             border-radius: 14px;
             padding: 12px 14px;
@@ -82,7 +83,10 @@
             font-weight: 700;
         }
 
-        .nav-button.active {
+        .nav-button.active,
+        .filter-chip.active,
+        .action-button.primary,
+        .back-button {
             background: var(--accent);
             color: #ffffff;
             box-shadow: none;
@@ -99,28 +103,39 @@
 
         .panel,
         .list-card,
-        .detail-card {
+        .detail-card,
+        .filter-panel {
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 18px;
             box-shadow: var(--shadow);
         }
 
-        .panel {
+        .panel,
+        .filter-panel,
+        .detail-card,
+        .list-card {
             padding: 16px;
+        }
+
+        .panel {
             margin-bottom: 14px;
         }
 
         .panel h2,
         .detail-card h2,
-        .screen-title {
+        .screen-title,
+        .filter-title {
             margin: 0 0 12px;
             font-size: 18px;
         }
 
         .panel p,
         .detail-field,
-        .list-meta {
+        .list-meta,
+        .screen-subtitle,
+        .filter-description,
+        .info-note {
             margin: 6px 0;
             color: var(--text-soft);
             line-height: 1.45;
@@ -128,13 +143,14 @@
 
         .panel strong,
         .detail-field strong,
-        .list-meta strong {
+        .list-meta strong,
+        .info-note strong {
             color: var(--text);
         }
 
         .map-card {
             overflow: hidden;
-            border-radius: 20px;
+            border-radius: 0;
             border: 1px solid var(--border);
             box-shadow: var(--shadow);
             background: var(--surface);
@@ -154,20 +170,9 @@
             margin-bottom: 14px;
         }
 
-        .screen-subtitle {
-            margin: 4px 0 0;
-            color: var(--text-soft);
-            font-size: 14px;
-            line-height: 1.4;
-        }
-
         .list-wrap {
             display: grid;
             gap: 12px;
-        }
-
-        .list-card {
-            padding: 16px;
         }
 
         .list-card h3 {
@@ -182,22 +187,38 @@
             margin-top: 14px;
         }
 
-        .action-button {
+        .action-button,
+        .filter-chip {
             background: var(--surface-muted);
             color: var(--text);
             box-shadow: inset 0 0 0 1px var(--border);
             font-weight: 700;
         }
 
-        .action-button.primary,
-        .back-button {
-            background: var(--accent);
-            color: #ffffff;
-            box-shadow: none;
+        .filter-panel {
+            margin-bottom: 14px;
         }
 
-        .detail-card {
-            padding: 18px;
+        .search-input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            background: #ffffff;
+            color: var(--text);
+            font: inherit;
+            margin-bottom: 12px;
+        }
+
+        .filter-chips {
+            display: grid;
+            gap: 8px;
+            grid-template-columns: 1fr;
+        }
+
+        .detail-fields {
+            display: grid;
+            gap: 10px;
         }
 
         .back-button {
@@ -205,9 +226,15 @@
             white-space: nowrap;
         }
 
-        .detail-fields {
-            display: grid;
-            gap: 10px;
+        .category-badge {
+            display: inline-flex;
+            margin-top: 10px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            color: var(--accent);
+            font-size: 13px;
+            font-weight: 700;
         }
 
         .empty-state {
@@ -226,6 +253,10 @@
 
             #map {
                 height: 58vh;
+            }
+
+            .filter-chips {
+                grid-template-columns: 1fr 1fr;
             }
         }
     </style>
@@ -248,6 +279,8 @@
                     <p><strong>Номер:</strong> <span id="info-number">-</span></p>
                     <p><strong>Уровень волнения:</strong> <span id="info-wave-level">-</span></p>
                     <p><strong>Описание:</strong> <span id="info-wave-text">Нет данных</span></p>
+                    <p><strong>Категория:</strong> <span id="info-category">-</span></p>
+                    <p class="info-note">Категории для учебного прототипа основаны на уровне волнения и показывают пригодность пляжа для купания.</p>
                 </div>
                 <div class="map-card">
                     <div id="map"></div>
@@ -258,9 +291,22 @@
                 <div class="screen-header">
                     <div>
                         <h2 class="screen-title">Список пляжей</h2>
-                        <p class="screen-subtitle">Все объекты загружаются из API один раз и переиспользуются в интерфейсе.</p>
+                        <p class="screen-subtitle">Здесь можно искать пляжи по названию и фильтровать их по учебным категориям безопасности.</p>
                     </div>
                 </div>
+
+                <div class="filter-panel">
+                    <h3 class="filter-title">Поиск и категории</h3>
+                    <p class="filter-description">Поиск работает по названию, а категории рассчитываются по значению wave_level.</p>
+                    <input id="search-input" class="search-input" type="text" placeholder="Введите часть названия пляжа">
+                    <div class="filter-chips">
+                        <button type="button" class="filter-chip active" data-category="all">Все пляжи</button>
+                        <button type="button" class="filter-chip" data-category="safe">Купание допустимо</button>
+                        <button type="button" class="filter-chip" data-category="caution">Нужна осторожность</button>
+                        <button type="button" class="filter-chip" data-category="danger">Купание не рекомендуется</button>
+                    </div>
+                </div>
+
                 <div id="beaches-list" class="list-wrap"></div>
             </section>
 
@@ -278,6 +324,7 @@
                         <div class="detail-field"><strong>Номер:</strong> <span id="detail-number">-</span></div>
                         <div class="detail-field"><strong>Уровень волнения:</strong> <span id="detail-wave-level">-</span></div>
                         <div class="detail-field"><strong>Описание волнения:</strong> <span id="detail-wave-text">Нет данных</span></div>
+                        <div class="detail-field"><strong>Категория:</strong> <span id="detail-category">-</span></div>
                         <div class="detail-field"><strong>Широта:</strong> <span id="detail-latitude">-</span></div>
                         <div class="detail-field"><strong>Долгота:</strong> <span id="detail-longitude">-</span></div>
                     </div>
@@ -293,22 +340,28 @@
         const infoNumber = document.getElementById('info-number');
         const infoWaveLevel = document.getElementById('info-wave-level');
         const infoWaveText = document.getElementById('info-wave-text');
+        const infoCategory = document.getElementById('info-category');
         const beachesList = document.getElementById('beaches-list');
         const detailName = document.getElementById('detail-name');
         const detailNumber = document.getElementById('detail-number');
         const detailWaveLevel = document.getElementById('detail-wave-level');
         const detailWaveText = document.getElementById('detail-wave-text');
+        const detailCategory = document.getElementById('detail-category');
         const detailLatitude = document.getElementById('detail-latitude');
         const detailLongitude = document.getElementById('detail-longitude');
         const detailBackButton = document.getElementById('detail-back-button');
         const navButtons = document.querySelectorAll('[data-screen-target]');
         const screens = document.querySelectorAll('.screen');
+        const searchInput = document.getElementById('search-input');
+        const filterChips = document.querySelectorAll('[data-category]');
 
         const beaches = [];
         const markersById = new Map();
         let markersGroup = null;
         let selectedBeach = null;
         let lastNonDetailScreen = 'map-screen';
+        let activeCategory = 'all';
+        let searchQuery = '';
 
         function getWaveLevelText(level) {
             const numericLevel = Number(level);
@@ -340,11 +393,52 @@
             return 'Очень сильное волнение';
         }
 
+        function getBeachCategoryKey(beach) {
+            if (beach.category_key) {
+                return beach.category_key;
+            }
+
+            const level = Number(beach.wave_level);
+
+            if (Number.isNaN(level)) {
+                return 'danger';
+            }
+
+            if (level <= 2) {
+                return 'safe';
+            }
+
+            if (level <= 5) {
+                return 'caution';
+            }
+
+            return 'danger';
+        }
+
+        function getBeachCategoryLabel(beach) {
+            if (beach.category_label) {
+                return beach.category_label;
+            }
+
+            const categoryKey = getBeachCategoryKey(beach);
+
+            if (categoryKey === 'safe') {
+                return 'Купание допустимо';
+            }
+
+            if (categoryKey === 'caution') {
+                return 'Нужна осторожность';
+            }
+
+            return 'Купание не рекомендуется';
+        }
+
         function updateInfoPanel(beach = {}) {
             infoName.textContent = beach.name || 'Без названия';
             infoNumber.textContent = beach.number ?? '-';
             infoWaveLevel.textContent = beach.wave_level ?? '-';
             infoWaveText.textContent = getWaveLevelText(beach.wave_level);
+            infoCategory.textContent = getBeachCategoryLabel(beach);
         }
 
         function updateDetailScreen(beach = {}) {
@@ -352,6 +446,7 @@
             detailNumber.textContent = beach.number ?? '-';
             detailWaveLevel.textContent = beach.wave_level ?? '-';
             detailWaveText.textContent = getWaveLevelText(beach.wave_level);
+            detailCategory.textContent = getBeachCategoryLabel(beach);
             detailLatitude.textContent = beach.latitude ?? '-';
             detailLongitude.textContent = beach.longitude ?? '-';
         }
@@ -380,7 +475,83 @@
             return '<b>' + (beach.name || 'Без названия') + '</b><br>' +
                 'Номер: ' + (beach.number ?? '-') + '<br>' +
                 'Уровень волнения: ' + (beach.wave_level ?? '-') + '<br>' +
-                'Описание: ' + getWaveLevelText(beach.wave_level);
+                'Описание: ' + getWaveLevelText(beach.wave_level) + '<br>' +
+                'Категория: ' + getBeachCategoryLabel(beach);
+        }
+
+        function getFilteredBeaches() {
+            return beaches.filter(beach => {
+                const matchesName = beach.name.toLowerCase().includes(searchQuery);
+                const matchesCategory = activeCategory === 'all' || getBeachCategoryKey(beach) === activeCategory;
+                return matchesName && matchesCategory;
+            });
+        }
+
+        function refreshMarkerVisibility() {
+            const visibleIds = new Set(getFilteredBeaches().map(beach => beach.id));
+
+            markersById.forEach((marker, beachId) => {
+                const isVisible = visibleIds.has(beachId);
+
+                if (isVisible && !map.hasLayer(marker)) {
+                    marker.addTo(map);
+                }
+
+                if (!isVisible && map.hasLayer(marker)) {
+                    map.removeLayer(marker);
+                }
+            });
+        }
+
+        function renderBeachesList() {
+            const filteredBeaches = getFilteredBeaches();
+
+            if (filteredBeaches.length === 0) {
+                beachesList.innerHTML = '<div class="empty-state">По заданным условиям пляжи не найдены.</div>';
+                refreshMarkerVisibility();
+                return;
+            }
+
+            beachesList.innerHTML = filteredBeaches.map(beach => {
+                return `
+                    <article class="list-card">
+                        <h3>${beach.name || 'Без названия'}</h3>
+                        <p class="list-meta"><strong>Номер:</strong> ${beach.number ?? '-'}</p>
+                        <p class="list-meta"><strong>Уровень волнения:</strong> ${beach.wave_level ?? '-'} (${getWaveLevelText(beach.wave_level)})</p>
+                        <span class="category-badge">${getBeachCategoryLabel(beach)}</span>
+                        <div class="list-actions">
+                            <button type="button" class="action-button primary" data-action="show-on-map" data-id="${beach.id}">Показать на карте</button>
+                            <button type="button" class="action-button" data-action="show-details" data-id="${beach.id}">Подробно</button>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+
+            refreshMarkerVisibility();
+        }
+
+        function renderMapMarkers() {
+            const markers = beaches.map(beach => {
+                const marker = L.marker([beach.latitude, beach.longitude])
+                    .bindPopup(buildPopupContent(beach))
+                    .addTo(map);
+
+                marker.on('click', function () {
+                    selectedBeach = beach;
+                    updateInfoPanel(beach);
+                });
+
+                markersById.set(beach.id, marker);
+                return marker;
+            });
+
+            markersGroup = L.featureGroup(markers);
+
+            if (markers.length > 0) {
+                map.fitBounds(markersGroup.getBounds(), {
+                    padding: [24, 24]
+                });
+            }
         }
 
         function focusBeachOnMap(beach) {
@@ -393,6 +564,11 @@
             selectedBeach = beach;
             updateInfoPanel(beach);
             setActiveScreen('map-screen');
+
+            if (!map.hasLayer(marker)) {
+                marker.addTo(map);
+            }
+
             map.setView([beach.latitude, beach.longitude], 14, { animate: true });
             marker.openPopup();
         }
@@ -403,53 +579,26 @@
             setActiveScreen('detail-screen');
         }
 
-        function renderBeachesList() {
-            if (beaches.length === 0) {
-                beachesList.innerHTML = '<div class="empty-state">Список пляжей пока пуст.</div>';
-                return;
-            }
-
-            beachesList.innerHTML = beaches.map(beach => {
-                return `
-                    <article class="list-card">
-                        <h3>${beach.name || 'Без названия'}</h3>
-                        <p class="list-meta"><strong>Номер:</strong> ${beach.number ?? '-'}</p>
-                        <p class="list-meta"><strong>Уровень волнения:</strong> ${beach.wave_level ?? '-'} (${getWaveLevelText(beach.wave_level)})</p>
-                        <div class="list-actions">
-                            <button type="button" class="action-button primary" data-action="show-on-map" data-id="${beach.id}">Показать на карте</button>
-                            <button type="button" class="action-button" data-action="show-details" data-id="${beach.id}">Подробно</button>
-                        </div>
-                    </article>
-                `;
-            }).join('');
-        }
-
-        function renderMapMarkers() {
-            const markers = beaches.map(beach => {
-                const marker = L.marker([beach.latitude, beach.longitude])
-                    .bindPopup(buildPopupContent(beach));
-
-                marker.on('click', function () {
-                    selectedBeach = beach;
-                    updateInfoPanel(beach);
-                });
-
-                markersById.set(beach.id, marker);
-                return marker;
-            });
-
-            markersGroup = L.featureGroup(markers).addTo(map);
-
-            if (markers.length > 0) {
-                map.fitBounds(markersGroup.getBounds(), {
-                    padding: [24, 24]
-                });
-            }
-        }
-
         navButtons.forEach(button => {
             button.addEventListener('click', function () {
                 setActiveScreen(button.dataset.screenTarget);
+            });
+        });
+
+        searchInput.addEventListener('input', function () {
+            searchQuery = searchInput.value.trim().toLowerCase();
+            renderBeachesList();
+        });
+
+        filterChips.forEach(chip => {
+            chip.addEventListener('click', function () {
+                activeCategory = chip.dataset.category;
+
+                filterChips.forEach(button => {
+                    button.classList.toggle('active', button === chip);
+                });
+
+                renderBeachesList();
             });
         });
 
@@ -488,8 +637,8 @@
             .then(response => response.json())
             .then(data => {
                 beaches.push(...data);
-                renderBeachesList();
                 renderMapMarkers();
+                renderBeachesList();
 
                 if (beaches.length > 0) {
                     updateInfoPanel(beaches[0]);
