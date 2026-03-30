@@ -16,6 +16,9 @@
             --text-soft: #5f7283;
             --accent: #1d6fa5;
             --accent-soft: #d9edf9;
+            --status-safe: #2f9e44;
+            --status-caution: #d9a404;
+            --status-danger: #d94841;
             --shadow: 0 12px 24px rgba(23, 48, 66, 0.08);
         }
 
@@ -239,6 +242,21 @@
             color: var(--accent);
             font-size: 13px;
             font-weight: 700;
+        }
+
+        .category-badge.badge-safe {
+            background: var(--status-safe);
+            color: #ffffff;
+        }
+
+        .category-badge.badge-caution {
+            background: var(--status-caution);
+            color: #ffffff;
+        }
+
+        .category-badge.badge-danger {
+            background: var(--status-danger);
+            color: #ffffff;
         }
 
         .empty-state {
@@ -508,6 +526,20 @@
             return 'Купание не рекомендуется';
         }
 
+        function getBeachCategoryBadgeClass(beach) {
+            const categoryKey = getBeachCategoryKey(beach);
+
+            if (categoryKey === 'safe') {
+                return 'badge-safe';
+            }
+
+            if (categoryKey === 'caution') {
+                return 'badge-caution';
+            }
+
+            return 'badge-danger';
+        }
+
         function updateInfoPanel(beach = {}) {
             infoName.textContent = beach.name || 'Без названия';
             infoNumber.textContent = beach.number ?? '-';
@@ -593,7 +625,7 @@
                         <h3>${beach.name || 'Без названия'}</h3>
                         <p class="list-meta"><strong>Номер:</strong> ${beach.number ?? '-'}</p>
                         <p class="list-meta"><strong>Уровень волнения:</strong> ${beach.wave_level ?? '-'} (${getWaveLevelText(beach.wave_level)})</p>
-                        <span class="category-badge">${getBeachCategoryLabel(beach)}</span>
+                        <span class="category-badge ${getBeachCategoryBadgeClass(beach)}">${getBeachCategoryLabel(beach)}</span>
                         <div class="list-actions">
                             <button type="button" class="action-button primary" data-action="show-on-map" data-id="${beach.id}">Показать на карте</button>
                             <button type="button" class="action-button" data-action="show-details" data-id="${beach.id}">Подробно</button>
