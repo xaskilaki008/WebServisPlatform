@@ -34,11 +34,11 @@
         body {
             display: flex;
             justify-content: center;
+            padding: 0;
         }
 
         .app-shell {
             width: 100%;
-            max-width: 480px;
             min-height: 100vh;
             background: linear-gradient(180deg, #f8fbfd 0%, #eef3f7 100%);
         }
@@ -53,6 +53,12 @@
             border-bottom: 1px solid var(--border);
         }
 
+        .topbar-inner {
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
         .topbar-title {
             margin: 0 0 12px;
             font-size: 20px;
@@ -63,6 +69,12 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
+        }
+
+        .page-body {
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
         }
 
         .nav-button,
@@ -118,10 +130,6 @@
             padding: 16px;
         }
 
-        .panel {
-            margin-bottom: 14px;
-        }
-
         .panel h2,
         .detail-card h2,
         .screen-title,
@@ -148,6 +156,11 @@
             color: var(--text);
         }
 
+        .map-layout {
+            display: grid;
+            gap: 14px;
+        }
+
         .map-card {
             overflow: hidden;
             border-radius: 0;
@@ -170,9 +183,26 @@
             margin-bottom: 14px;
         }
 
-        .list-wrap {
+        .filter-panel {
+            margin-bottom: 14px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            background: #ffffff;
+            color: var(--text);
+            font: inherit;
+            margin-bottom: 12px;
+        }
+
+        .filter-chips,
+        .list-wrap,
+        .detail-fields {
             display: grid;
-            gap: 12px;
+            gap: 10px;
         }
 
         .list-card h3 {
@@ -193,32 +223,6 @@
             color: var(--text);
             box-shadow: inset 0 0 0 1px var(--border);
             font-weight: 700;
-        }
-
-        .filter-panel {
-            margin-bottom: 14px;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 12px 14px;
-            border-radius: 14px;
-            border: 1px solid var(--border);
-            background: #ffffff;
-            color: var(--text);
-            font: inherit;
-            margin-bottom: 12px;
-        }
-
-        .filter-chips {
-            display: grid;
-            gap: 8px;
-            grid-template-columns: 1fr;
-        }
-
-        .detail-fields {
-            display: grid;
-            gap: 10px;
         }
 
         .back-button {
@@ -246,17 +250,85 @@
             box-shadow: var(--shadow);
         }
 
-        @media (min-width: 768px) {
-            .app-shell {
-                max-width: 540px;
+        @media (min-width: 700px) {
+            body {
+                padding: 18px;
             }
 
-            #map {
-                height: 58vh;
+            .app-shell {
+                border-radius: 28px;
+                overflow: hidden;
+                box-shadow: 0 24px 48px rgba(23, 48, 66, 0.12);
+                min-height: calc(100vh - 36px);
+            }
+
+            .topbar {
+                padding: 20px 24px;
+            }
+
+            .screen {
+                padding: 24px;
+            }
+
+            .topbar-title {
+                font-size: 24px;
+            }
+
+            .topbar-nav {
+                grid-template-columns: repeat(2, minmax(180px, 220px));
+                justify-content: start;
             }
 
             .filter-chips {
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .list-wrap {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 14px;
+            }
+
+            .detail-fields {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 14px 18px;
+            }
+
+            #map {
+                height: 60vh;
+                min-height: 460px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .screen {
+                padding: 28px;
+            }
+
+            .map-layout {
+                grid-template-columns: minmax(300px, 360px) minmax(0, 1fr);
+                align-items: start;
+            }
+
+            .map-layout .panel {
+                position: sticky;
+                top: 112px;
+                margin: 0;
+            }
+
+            #map {
+                height: calc(100vh - 190px);
+                min-height: 560px;
+            }
+
+            .list-wrap {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 16px;
+            }
+
+            .list-card {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
             }
         }
     </style>
@@ -264,26 +336,30 @@
 <body>
     <div class="app-shell">
         <header class="topbar">
-            <h1 class="topbar-title">Мониторинг пляжей Севастополя</h1>
-            <div class="topbar-nav">
-                <button type="button" class="nav-button active" data-screen-target="map-screen">Карта</button>
-                <button type="button" class="nav-button" data-screen-target="list-screen">Доступные пляжи</button>
+            <div class="topbar-inner">
+                <h1 class="topbar-title">Мониторинг пляжей Севастополя</h1>
+                <div class="topbar-nav">
+                    <button type="button" class="nav-button active" data-screen-target="map-screen">Карта</button>
+                    <button type="button" class="nav-button" data-screen-target="list-screen">Доступные пляжи</button>
+                </div>
             </div>
         </header>
 
-        <main>
+        <main class="page-body">
             <section id="map-screen" class="screen active">
-                <div id="info-panel" class="panel">
-                    <h2>Информация о пляже</h2>
-                    <p><strong>Название:</strong> <span id="info-name">Выберите пляж на карте</span></p>
-                    <p><strong>Номер:</strong> <span id="info-number">-</span></p>
-                    <p><strong>Уровень волнения:</strong> <span id="info-wave-level">-</span></p>
-                    <p><strong>Описание:</strong> <span id="info-wave-text">Нет данных</span></p>
-                    <p><strong>Категория:</strong> <span id="info-category">-</span></p>
-                    <p class="info-note">Категории для учебного прототипа основаны на уровне волнения и показывают пригодность пляжа для купания.</p>
-                </div>
-                <div class="map-card">
-                    <div id="map"></div>
+                <div class="map-layout">
+                    <div id="info-panel" class="panel">
+                        <h2>Информация о пляже</h2>
+                        <p><strong>Название:</strong> <span id="info-name">Выберите пляж на карте</span></p>
+                        <p><strong>Номер:</strong> <span id="info-number">-</span></p>
+                        <p><strong>Уровень волнения:</strong> <span id="info-wave-level">-</span></p>
+                        <p><strong>Описание:</strong> <span id="info-wave-text">Нет данных</span></p>
+                        <p><strong>Категория:</strong> <span id="info-category">-</span></p>
+                        <p class="info-note">Категории для учебного прототипа основаны на уровне волнения и показывают пригодность пляжа для купания.</p>
+                    </div>
+                    <div class="map-card">
+                        <div id="map"></div>
+                    </div>
                 </div>
             </section>
 
@@ -357,7 +433,6 @@
 
         const beaches = [];
         const markersById = new Map();
-        let markersGroup = null;
         let selectedBeach = null;
         let lastNonDetailScreen = 'map-screen';
         let activeCategory = 'all';
@@ -531,7 +606,7 @@
         }
 
         function renderMapMarkers() {
-            const markers = beaches.map(beach => {
+            beaches.forEach(beach => {
                 const marker = L.marker([beach.latitude, beach.longitude])
                     .bindPopup(buildPopupContent(beach))
                     .addTo(map);
@@ -542,13 +617,11 @@
                 });
 
                 markersById.set(beach.id, marker);
-                return marker;
             });
 
-            markersGroup = L.featureGroup(markers);
-
-            if (markers.length > 0) {
-                map.fitBounds(markersGroup.getBounds(), {
+            if (beaches.length > 0) {
+                const bounds = L.featureGroup(Array.from(markersById.values())).getBounds();
+                map.fitBounds(bounds, {
                     padding: [24, 24]
                 });
             }
