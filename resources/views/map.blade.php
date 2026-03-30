@@ -66,12 +66,16 @@
             margin: 0 0 12px;
             font-size: 20px;
             font-weight: 700;
+            text-align: center;
         }
 
         .topbar-nav {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
+            max-width: 480px;
+            margin: 0 auto;
+            align-items: center;
         }
 
         .page-body {
@@ -96,6 +100,25 @@
             color: var(--text);
             box-shadow: inset 0 0 0 1px var(--border);
             font-weight: 700;
+        }
+
+        .nav-button[data-screen-target="map-screen"] {
+            font-size: 0.92em;
+        }
+
+        @media (max-width: 699px) {
+            .topbar-nav {
+                gap: 8px;
+            }
+
+            .nav-button {
+                padding: 10px 12px;
+                font-size: 15px;
+            }
+
+            .nav-button[data-screen-target="map-screen"] {
+                font-size: 15px;
+            }
         }
 
         .nav-button.active,
@@ -174,8 +197,8 @@
 
         #map {
             width: 100%;
-            height: 52vh;
-            min-height: 360px;
+            height: 62vh;
+            min-height: 420px;
         }
 
         .screen-header {
@@ -268,6 +291,19 @@
             box-shadow: var(--shadow);
         }
 
+        @media (max-width: 699px) {
+            #info-panel h2 {
+                font-size: 18px;
+            }
+
+            #info-panel p,
+            #info-panel .info-note,
+            #info-panel span {
+                font-size: 16px;
+                line-height: 1.4;
+            }
+        }
+
         @media (min-width: 700px) {
             body {
                 padding: 18px;
@@ -294,7 +330,7 @@
 
             .topbar-nav {
                 grid-template-columns: repeat(2, minmax(180px, 220px));
-                justify-content: start;
+                justify-content: center;
             }
 
             .filter-chips {
@@ -312,8 +348,8 @@
             }
 
             #map {
-                height: 60vh;
-                min-height: 460px;
+                height: 68vh;
+                min-height: 520px;
             }
         }
 
@@ -322,20 +358,52 @@
                 padding: 28px;
             }
 
+            .topbar-inner {
+                max-width: 1840px;
+            }
+
+            .page-body {
+                max-width: 1840px;
+            }
+
             .map-layout {
-                grid-template-columns: minmax(300px, 360px) minmax(0, 1fr);
+                grid-template-columns: minmax(200px, 220px) minmax(0, 1fr);
                 align-items: start;
+                gap: 20px;
             }
 
             .map-layout .panel {
                 position: sticky;
                 top: 112px;
                 margin: 0;
+                max-height: calc(100vh - 160px);
+                overflow: auto;
+            }
+
+            .topbar-title,
+            .panel h2,
+            .detail-card h2,
+            .screen-title,
+            .filter-title,
+            .list-card h3,
+            .nav-button,
+            .action-button,
+            .back-button,
+            .filter-chip,
+            .search-input,
+            .panel p,
+            .detail-field,
+            .list-meta,
+            .screen-subtitle,
+            .filter-description,
+            .info-note,
+            .category-badge {
+                font-size: 24px;
             }
 
             #map {
-                height: calc(100vh - 190px);
-                min-height: 560px;
+                height: calc(100vh - 145px);
+                min-height: 680px;
             }
 
             .list-wrap {
@@ -347,6 +415,23 @@
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
+            }
+        }
+
+        @media (min-width: 1440px) {
+            .topbar-inner,
+            .page-body {
+                max-width: 1880px;
+            }
+
+            .map-layout {
+                grid-template-columns: minmax(190px, 210px) minmax(0, 1fr);
+                gap: 22px;
+            }
+
+            #map {
+                height: calc(100vh - 130px);
+                min-height: 760px;
             }
         }
     </style>
@@ -428,8 +513,12 @@
     </div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
     <script>
         const map = L.map('map').setView([44.61, 33.52], 11);
+        map.createPane('beachPolygonsPane');
+        map.getPane('beachPolygonsPane').style.zIndex = '350';
+        map.getPane('beachPolygonsPane').style.pointerEvents = 'auto';
         const infoName = document.getElementById('info-name');
         const infoNumber = document.getElementById('info-number');
         const infoWaveLevel = document.getElementById('info-wave-level');
@@ -451,6 +540,7 @@
 
         const beaches = [];
         const markersById = new Map();
+        let beachesPolygonLayer = null;
         let selectedBeach = null;
         let lastNonDetailScreen = 'map-screen';
         let activeCategory = 'all';
@@ -586,7 +676,156 @@
                 'Категория: ' + getBeachCategoryLabel(beach);
         }
 
+        function buildPolygonPopupContent(properties = {}) {
+            const lines = [];
+            const hasPrimaryData = properties.name ||
+                (properties.number !== undefined && properties.number !== null && properties.number !== '') ||
+                (properties.wave_level !== undefined && properties.wave_level !== null && properties.wave_level !== '') ||
+                properties.category_label;
+
+            if (properties.name) {
+                lines.push('<b>' + properties.name + '</b>');
+            }
+
+            if (properties.number !== undefined && properties.number !== null && properties.number !== '') {
+                lines.push('Номер: ' + properties.number);
+            }
+
+            if (properties.wave_level !== undefined && properties.wave_level !== null && properties.wave_level !== '') {
+                lines.push('Уровень волнения: ' + properties.wave_level);
+                lines.push('Описание: ' + getWaveLevelText(properties.wave_level));
+            }
+
+            if (hasPrimaryData) {
+                lines.push('Категория: ' + getBeachCategoryLabel(properties));
+            }
+
+            return lines.join('<br>');
+        }
+
+        function getPolygonStyle(properties = {}) {
+            const categoryKey = getBeachCategoryKey(properties);
+            const colorsByCategory = {
+                safe: {
+                    color: '#2f9e44',
+                    fillColor: '#2f9e44'
+                },
+                caution: {
+                    color: '#d9a404',
+                    fillColor: '#d9a404'
+                },
+                danger: {
+                    color: '#d94841',
+                    fillColor: '#d94841'
+                }
+            };
+            const palette = colorsByCategory[categoryKey] || colorsByCategory.danger;
+
+            return {
+                color: palette.color,
+                weight: 2,
+                opacity: 0.95,
+                fillColor: palette.fillColor,
+                fillOpacity: 0.28
+            };
+        }
+
+        function ensureMarkersOnTop() {
+            markersById.forEach(marker => {
+                marker.setZIndexOffset(1000);
+
+                if (typeof marker.bringToFront === 'function') {
+                    marker.bringToFront();
+                }
+            });
+        }
+
+        function getMapDataBounds() {
+            let combinedBounds = null;
+
+            markersById.forEach(marker => {
+                const latLng = marker.getLatLng();
+                const pointBounds = L.latLngBounds(latLng, latLng);
+                combinedBounds = combinedBounds ? combinedBounds.extend(pointBounds) : pointBounds;
+            });
+
+            if (beachesPolygonLayer && beachesPolygonLayer.getLayers().length > 0) {
+                const polygonBounds = beachesPolygonLayer.getBounds();
+
+                if (polygonBounds.isValid()) {
+                    combinedBounds = combinedBounds ? combinedBounds.extend(polygonBounds) : polygonBounds;
+                }
+            }
+
+            return combinedBounds;
+        }
+
+        function fitMapToAvailableData() {
+            const bounds = getMapDataBounds();
+
+            if (bounds && bounds.isValid()) {
+                map.fitBounds(bounds, {
+                    padding: [24, 24]
+                });
+            }
+        }
+
+        function getBeachPointFeature(beach) {
+            const latitude = Number(beach.latitude);
+            const longitude = Number(beach.longitude);
+
+            if (Number.isNaN(latitude) || Number.isNaN(longitude)) {
+                return null;
+            }
+
+            return turf.point([longitude, latitude]);
+        }
+
+        function isBeachRelatedToPolygon(beach, feature) {
+            const beachPoint = getBeachPointFeature(beach);
+
+            if (!beachPoint) {
+                return false;
+            }
+
+            if (turf.booleanPointInPolygon(beachPoint, feature)) {
+                return true;
+            }
+
+            const polygonOutline = turf.polygonToLine(feature);
+            const distanceToPolygonKm = turf.pointToLineDistance(beachPoint, polygonOutline, {
+                units: 'kilometers'
+            });
+
+            return distanceToPolygonKm <= 0.5;
+        }
+
+        function getRelatedBeachesForFeature(feature) {
+            if (!beaches.length) {
+                return [];
+            }
+
+            return beaches.filter(beach => isBeachRelatedToPolygon(beach, feature));
+        }
+
+        function buildPolygonHoverContent(feature) {
+            if (!beaches.length) {
+                return '<strong>Связанные пляжи</strong><br>Данные пляжей еще загружаются';
+            }
+
+            const relatedBeaches = getRelatedBeachesForFeature(feature);
+
+            if (relatedBeaches.length === 0) {
+                return '<strong>Связанные пляжи</strong><br>Пляжи не найдены';
+            }
+
+            return '<strong>Связанные пляжи</strong><br>' + relatedBeaches
+                .map(beach => beach.name || 'Без названия')
+                .join('<br>');
+        }
+
         function getFilteredBeaches() {
+
             return beaches.filter(beach => {
                 const matchesName = beach.name.toLowerCase().includes(searchQuery);
                 const matchesCategory = activeCategory === 'all' || getBeachCategoryKey(beach) === activeCategory;
@@ -651,15 +890,63 @@
                 markersById.set(beach.id, marker);
             });
 
-            if (beaches.length > 0) {
-                const bounds = L.featureGroup(Array.from(markersById.values())).getBounds();
-                map.fitBounds(bounds, {
-                    padding: [24, 24]
-                });
+            ensureMarkersOnTop();
+            fitMapToAvailableData();
+        }
+
+        function renderBeachPolygons(geoJson) {
+            if (beachesPolygonLayer) {
+                map.removeLayer(beachesPolygonLayer);
             }
+
+            beachesPolygonLayer = L.geoJSON(geoJson, {
+                pane: 'beachPolygonsPane',
+                filter: function (feature) {
+                    const geometryType = feature?.geometry?.type;
+                    return geometryType === 'Polygon' || geometryType === 'MultiPolygon';
+                },
+                style: function (feature) {
+                    return getPolygonStyle(feature.properties || {});
+                },
+                onEachFeature: function (feature, layer) {
+                    const properties = feature.properties || {};
+                    const popupContent = buildPolygonPopupContent(properties);
+
+                    if (popupContent) {
+                        layer.bindPopup(popupContent);
+                    }
+
+                    layer.on('click', function () {
+                        selectedBeach = properties;
+                        updateInfoPanel(properties);
+
+                        if (document.getElementById('detail-screen').classList.contains('active')) {
+                            updateDetailScreen(properties);
+                        }
+                    });
+
+                    layer.on('mouseover', function () {
+                        layer
+                            .bindTooltip(buildPolygonHoverContent(feature), {
+                                sticky: true,
+                                direction: 'top',
+                                opacity: 0.95
+                            })
+                            .openTooltip();
+                    });
+
+                    layer.on('mouseout', function () {
+                        layer.closeTooltip();
+                    });
+                }
+            }).addTo(map);
+
+            fitMapToAvailableData();
+            ensureMarkersOnTop();
         }
 
         function focusBeachOnMap(beach) {
+
             const marker = markersById.get(beach.id);
 
             if (!marker) {
@@ -753,6 +1040,25 @@
                 console.error('Ошибка загрузки пляжей:', error);
                 beachesList.innerHTML = '<div class="empty-state">Не удалось загрузить данные пляжей.</div>';
                 alert('Не удалось загрузить данные пляжей');
+            });
+
+        fetch('/sevastopol_beaches_renumbered.geojson')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('HTTP ' + response.status + ' ' + response.statusText);
+                }
+
+                return response.json();
+            })
+            .then(data => {
+                if (!data || (data.type !== 'FeatureCollection' && data.type !== 'Feature')) {
+                    throw new Error('Ожидался GeoJSON FeatureCollection или Feature.');
+                }
+
+                renderBeachPolygons(data);
+            })
+            .catch(error => {
+                console.error('Ошибка загрузки GeoJSON полигонов пляжей из /sevastopol_beaches_renumbered.geojson:', error);
             });
     </script>
 </body>
