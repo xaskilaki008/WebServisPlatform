@@ -125,7 +125,7 @@
         .filter-chip.active,
         .action-button.primary,
         .back-button {
-            background: var(--accent);
+            background: #5f7283;
             color: #ffffff;
             box-shadow: none;
         }
@@ -145,7 +145,7 @@
         .filter-panel {
             background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: 18px;
+            border-radius: 10px;
             box-shadow: var(--shadow);
         }
 
@@ -262,7 +262,7 @@
             padding: 6px 10px;
             border-radius: 999px;
             background: var(--accent-soft);
-            color: var(--accent);
+            color: #5f7283;
             font-size: 13px;
             font-weight: 700;
         }
@@ -398,7 +398,7 @@
             .filter-description,
             .info-note,
             .category-badge {
-                font-size: 24px;
+                font-size: 14px;
             }
 
             #map {
