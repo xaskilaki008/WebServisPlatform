@@ -537,6 +537,13 @@
         const screens = document.querySelectorAll('.screen');
         const searchInput = document.getElementById('search-input');
         const filterChips = document.querySelectorAll('[data-category]');
+        const cssVariables = getComputedStyle(document.documentElement);
+
+        const polygonColors = {
+            safe: cssVariables.getPropertyValue('--status-safe').trim(),
+            caution: cssVariables.getPropertyValue('--status-caution').trim(),
+            danger: cssVariables.getPropertyValue('--status-danger').trim()
+        };
 
         const beaches = [];
         const markersById = new Map();
@@ -705,31 +712,18 @@
 
         function getPolygonStyle(properties = {}) {
             const categoryKey = getBeachCategoryKey(properties);
-            const colorsByCategory = {
-                safe: {
-                    color: '#2f9e44',
-                    fillColor: '#2f9e44'
-                },
-                caution: {
-                    color: '#d9a404',
-                    fillColor: '#d9a404'
-                },
-                danger: {
-                    color: '#d94841',
-                    fillColor: '#d94841'
-                }
-            };
-            const palette = colorsByCategory[categoryKey] || colorsByCategory.danger;
+
+            const polygonColor = polygonColors[categoryKey] || polygonColors.danger;
 
             return {
-                color: palette.color,
+                color: polygonColor,
                 weight: 2,
                 opacity: 0.95,
-                fillColor: palette.fillColor,
+                fillColor: polygonColor,
                 fillOpacity: 0.28
             };
         }
-
+        
         function ensureMarkersOnTop() {
             markersById.forEach(marker => {
                 marker.setZIndexOffset(1000);
@@ -784,22 +778,29 @@
         function isBeachRelatedToPolygon(beach, feature) {
             const beachPoint = getBeachPointFeature(beach);
 
-            if (!beachPoint) {
+            if (!beachPoint || !feature || !feature.geometry) {
                 return false;
             }
 
-            if (turf.booleanPointInPolygon(beachPoint, feature)) {
-                return true;
+            try {
+                if (turf.booleanPointInPolygon(beachPoint, feature)) {
+                    return true;
+                }
+
+                const polygonOutline = turf.polygonToLine(feature);
+
+                const distanceToPolygonKm = turf.pointToLineDistance(
+                    beachPoint,
+                    polygonOutline,
+                    { units: 'kilometers' }
+                );
+
+                return distanceToPolygonKm <= 0.4;
+            } catch (error) {
+                console.error('Ошибка сопоставления пляжа и полигона:', error);
+                return false;
             }
-
-            const polygonOutline = turf.polygonToLine(feature);
-            const distanceToPolygonKm = turf.pointToLineDistance(beachPoint, polygonOutline, {
-                units: 'kilometers'
-            });
-
-            return distanceToPolygonKm <= 0.5;
         }
-
         function getRelatedBeachesForFeature(feature) {
             if (!beaches.length) {
                 return [];
@@ -906,7 +907,12 @@
                     return geometryType === 'Polygon' || geometryType === 'MultiPolygon';
                 },
                 style: function (feature) {
-                    return getPolygonStyle(feature.properties || {});
+                    const relatedBeaches = getRelatedBeachesForFeature(feature);
+                    const source = relatedBeaches.length > 0
+                        ? relatedBeaches[0]
+                        : (feature.properties || {});
+
+                    return getPolygonStyle(source);
                 },
                 onEachFeature: function (feature, layer) {
                     const properties = feature.properties || {};
@@ -1029,6 +1035,18 @@
             .then(response => response.json())
             .then(data => {
                 beaches.push(...data);
+
+                if (beachesPolygonLayer) {
+                    beachesPolygonLayer.setStyle(function (feature) {
+                        const relatedBeaches = getRelatedBeachesForFeature(feature);
+                        const source = relatedBeaches.length > 0
+                            ? relatedBeaches[0]
+                            : (feature.properties || {});
+
+                        return getPolygonStyle(source);
+                    });
+                }
+
                 renderMapMarkers();
                 renderBeachesList();
 
@@ -1042,7 +1060,7 @@
                 alert('Не удалось загрузить данные пляжей');
             });
 
-        fetch('/sevastopol_beaches_renumbered.geojson')
+        fetch('/beaches-polygon.json')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('HTTP ' + response.status + ' ' + response.statusText);
