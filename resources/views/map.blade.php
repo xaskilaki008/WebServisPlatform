@@ -299,7 +299,7 @@
             #info-panel p,
             #info-panel .info-note,
             #info-panel span {
-                font-size: 16px;
+                font-size: 10px;
                 line-height: 1.4;
             }
         }

@@ -9,7 +9,7 @@ class BeachSeeder extends Seeder
 {
     public function run(): void
     {
-        $path = public_path('sevastopol_beaches.geojson');
+        $path = public_path('sevastopol_beaches_renumbered.geojson');
         $content = file_get_contents($path);
         $data = json_decode($content, true);
 
