@@ -417,7 +417,9 @@
                 grid-template-columns: repeat(3, minmax(0, 1fr));
                 gap: 16px;
             }
-
+            .topbar-title {
+                font-size: 24px;
+            }
             .list-card {
                 display: flex;
                 flex-direction: column;
@@ -511,7 +513,7 @@
 
                 <div class="filter-panel">
                     <h3 class="filter-title">Поиск и категории</h3>
-                    <p class="filter-description">Поиск работает по названию, а категории рассчитываются по значению wave_level.</p>
+                    <p class="filter-description">Поиск работает по названию, а категории рассчитываются по значению уровень волнения.</p>
                     <input id="search-input" class="search-input" type="text" placeholder="Введите часть названия пляжа">
                     <div class="filter-chips">
                         <button type="button" class="filter-chip active" data-category="all">Все пляжи</button>
