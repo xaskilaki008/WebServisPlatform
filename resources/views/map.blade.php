@@ -126,6 +126,21 @@
                 height: 48px;
                 font-size: 22px;
             }
+            .clear-search-button {
+                display: block;
+                width: fit-content;
+                margin: 4px auto 0;
+            }
+            #info-panel h2 {
+                font-size: 18px;
+            }
+
+            #info-panel p,
+            #info-panel .info-note,
+            #info-panel span {
+                font-size: 10px;
+                line-height: 1.4;
+            }
         }
 
         .nav-button.active,
@@ -228,7 +243,7 @@
             background: #ffffff;
             color: var(--text);
             font: inherit;
-            margin-bottom: 12px;
+            margin-bottom: 2px;
         }
 
         .filter-chips,
@@ -298,18 +313,6 @@
             box-shadow: var(--shadow);
         }
 
-        @media (max-width: 699px) {
-            #info-panel h2 {
-                font-size: 18px;
-            }
-
-            #info-panel p,
-            #info-panel .info-note,
-            #info-panel span {
-                font-size: 10px;
-                line-height: 1.4;
-            }
-        }
 
         @media (min-width: 700px) {
             body {
@@ -357,6 +360,11 @@
             #map {
                 height: 68vh;
                 min-height: 520px;
+            }
+            .clear-search-button {
+                display: block;
+                width: fit-content;
+                margin: 0 auto;
             }
         }
 
@@ -471,6 +479,29 @@
             visibility: visible;
             transform: translateY(0);
         }
+        .clear-search-button {
+            display: block;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            padding: 8px 70px;
+            border: none;
+            border-radius: 12px;
+            background: #544646;
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            width: auto;
+            min-width: 88px;
+            transition: opacity 0.2s ease;
+        }
+
+        .clear-search-button:hover {
+            opacity: 0.85;
+            background: #ff0000;
+            color: #ffffff;
+        }
     </style>
 </head>
 <body>
@@ -515,6 +546,9 @@
                     <h3 class="filter-title">Поиск и категории</h3>
                     <p class="filter-description">Поиск работает по названию, а категории рассчитываются по значению уровень волнения.</p>
                     <input id="search-input" class="search-input" type="text" placeholder="Введите часть названия пляжа">
+                    <button type="button" id="clear-search-button" class="clear-search-button">
+                        Очистить
+                    </button>
                     <div class="filter-chips">
                         <button type="button" class="filter-chip active" data-category="all">Все пляжи</button>
                         <button type="button" class="filter-chip" data-category="safe">Купание допустимо</button>
@@ -578,6 +612,7 @@
         const filterChips = document.querySelectorAll('[data-category]');
         const cssVariables = getComputedStyle(document.documentElement);
         const scrollTopButton = document.getElementById('scroll-top-button');
+        const clearSearchButton = document.getElementById('clear-search-button');
 
         const polygonColors = {
             safe: cssVariables.getPropertyValue('--status-safe').trim(),
@@ -1164,7 +1199,13 @@
                     behavior: 'smooth'
                 });
             });
-            
+            clearSearchButton.addEventListener('click', function () {
+                searchInput.value = '';
+                searchQuery = '';
+                renderBeachesList();
+                searchInput.focus();
+            });
+
             updateScrollTopButtonVisibility();
     </script>
 </body>
