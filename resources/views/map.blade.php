@@ -119,6 +119,13 @@
             .nav-button[data-screen-target="map-screen"] {
                 font-size: 15px;
             }
+            .scroll-top-button {
+                right: 16px;
+                bottom: 92px;
+                width: 48px;
+                height: 48px;
+                font-size: 22px;
+            }
         }
 
         .nav-button.active,
@@ -434,6 +441,34 @@
                 min-height: 760px;
             }
         }
+        .scroll-top-button {
+            position: fixed;
+            right: 20px;
+            bottom: 88px;
+            width: 52px;
+            height: 52px;
+            border: none;
+            border-radius: 50%;
+            background: #1f2937;
+            color: #ffffff;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(12px);
+            transition:
+                opacity 0.2s ease,
+                visibility 0.2s ease,
+                transform 0.2s ease;
+            z-index: 2000;
+        }
+
+        .scroll-top-button.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body>
@@ -511,7 +546,9 @@
             </section>
         </main>
     </div>
-
+    <button id="scroll-top-button" class="scroll-top-button" type="button">
+    ↑
+    </button>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
     <script>
@@ -538,6 +575,7 @@
         const searchInput = document.getElementById('search-input');
         const filterChips = document.querySelectorAll('[data-category]');
         const cssVariables = getComputedStyle(document.documentElement);
+        const scrollTopButton = document.getElementById('scroll-top-button');
 
         const polygonColors = {
             safe: cssVariables.getPropertyValue('--status-safe').trim(),
@@ -1078,6 +1116,54 @@
             .catch(error => {
                 console.error('Ошибка загрузки GeoJSON полигонов пляжей из /sevastopol_beaches_renumbered.geojson:', error);
             });
+            function getActiveScrollableElement() {
+                const activeScreen = document.querySelector('.screen.active');
+
+                if (
+                    activeScreen &&
+                    activeScreen.scrollHeight > activeScreen.clientHeight
+                ) {
+                    return activeScreen;
+                }
+
+                return window;
+            }
+
+            function updateScrollTopButtonVisibility() {
+                const scrollable = getActiveScrollableElement();
+
+                const currentScroll = scrollable === window
+                    ? window.scrollY
+                    : scrollable.scrollTop;
+
+                scrollTopButton.classList.toggle('visible', currentScroll > 120);
+            }
+
+            screens.forEach(screen => {
+                screen.addEventListener('scroll', updateScrollTopButtonVisibility);
+            });
+
+            window.addEventListener('scroll', updateScrollTopButtonVisibility);
+
+            scrollTopButton.addEventListener('click', function () {
+                const scrollable = getActiveScrollableElement();
+
+                if (scrollable === window) {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+
+                    return;
+                }
+
+                scrollable.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            
+            updateScrollTopButtonVisibility();
     </script>
 </body>
 </html>
