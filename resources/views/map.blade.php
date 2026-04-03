@@ -205,16 +205,46 @@
         }
 
         .map-layout {
-            display: grid;
-            gap: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .left-column {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
 
         .map-card {
+            flex: 1;
+            min-width: 0;
             overflow: hidden;
             border-radius: 0;
             border: 1px solid var(--border);
             box-shadow: var(--shadow);
             background: var(--surface);
+        }
+
+        .legend-panel {
+            overflow: hidden;
+            max-height: 300px;  /* ← добавьте */
+        }
+        .legend-panel img {
+            display: block;
+            width: 100%;
+            height: auto;
+            max-height: 150px;
+            object-fit: contain;
+            margin: 0 auto;
+        }
+        .legend-image {
+            max-height: 150px;
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;  /* ← чтобы вписать в блок */
+            margin: 0 auto;
         }
 
         #map {
@@ -382,19 +412,17 @@
             }
 
             .map-layout {
-                grid-template-columns: minmax(200px, 220px) minmax(0, 1fr);
-                align-items: start;
+                flex-direction: row;
+                align-items: flex-start;
                 gap: 20px;
             }
 
-            .map-layout .panel {
+            .left-column {
+                width: 320px;
+                flex: 0 0 320px;
                 position: sticky;
                 top: 112px;
-                margin: 0;
-                max-height: calc(100vh - 160px);
-                overflow: auto;
             }
-
             .topbar-title,
             .panel h2,
             .detail-card h2,
@@ -442,8 +470,12 @@
             }
 
             .map-layout {
-                grid-template-columns: minmax(190px, 210px) minmax(0, 1fr);
                 gap: 22px;
+            }
+
+            .left-column {
+                width: 340px;
+                flex-basis: 340px;
             }
 
             #map {
@@ -519,15 +551,23 @@
         <main class="page-body">
             <section id="map-screen" class="screen active">
                 <div class="map-layout">
-                    <div id="info-panel" class="panel">
-                        <h2>Информация о пляже</h2>
-                        <p><strong>Название:</strong> <span id="info-name">Выберите пляж на карте</span></p>
-                        <p><strong>Номер:</strong> <span id="info-number">-</span></p>
-                        <p><strong>Уровень волнения:</strong> <span id="info-wave-level">-</span></p>
-                        <p><strong>Описание:</strong> <span id="info-wave-text">Нет данных</span></p>
-                        <p><strong>Категория:</strong> <span id="info-category">-</span></p>
-                        <p class="info-note">Категории для учебного прототипа основаны на уровне волнения и показывают пригодность пляжа для купания.</p>
+                    <div class="left-column">
+                        <div id="info-panel" class="panel">
+                            <h2>Информация о пляже</h2>
+                            <p><strong>Название:</strong> <span id="info-name">Выберите пляж на карте</span></p>
+                            <p><strong>Номер:</strong> <span id="info-number">-</span></p>
+                            <p><strong>Уровень волнения:</strong> <span id="info-wave-level">-</span></p>
+                            <p><strong>Описание:</strong> <span id="info-wave-text">Нет данных</span></p>
+                            <p><strong>Категория:</strong> <span id="info-category">-</span></p>
+                            <p class="info-note">Категории для учебного прототипа основаны на уровне волнения и показывают пригодность пляжа для купания.</p>
+                        </div>
+
+                        <div class="panel legend-panel">
+                            <h3>Пляжи имеют цвета в соответствии с флажками:</h3>
+                            <img class="legend-image" src="{{ asset('./flag-colors.png') }}" alt="Цвета флажков">
+                        </div>
                     </div>
+
                     <div class="map-card">
                         <div id="map"></div>
                     </div>
