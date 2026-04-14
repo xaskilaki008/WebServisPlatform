@@ -8,157 +8,150 @@
     <style>
         :root {
             color-scheme: light;
-            --bg: #eef3f7;
+            --bg: #edf3f8;
             --surface: #ffffff;
-            --surface-muted: #f6f8fb;
-            --border: #d8e1ea;
-            --text: #173042;
-            --text-soft: #5f7283;
-            --accent: #1d6fa5;
-            --accent-soft: #d9edf9;
-            --status-safe: #2f9e44;
-            --status-caution: #d9a404;
-            --status-danger: #d94841;
-            --shadow: 0 12px 24px rgba(23, 48, 66, 0.08);
+            --surface-soft: #f6f9fc;
+            --surface-strong: #0f2d44;
+            --border: #d2deea;
+            --text: #143149;
+            --text-soft: #547086;
+            --accent: #0e81c6;
+            --accent-strong: #0b669c;
+            --status-safe: #1f9d5a;
+            --status-caution: #db9c08;
+            --status-danger: #db4a40;
+            --shadow-soft: 0 10px 30px rgba(21, 48, 72, 0.08);
+            --shadow-strong: 0 20px 42px rgba(8, 30, 48, 0.18);
+            --radius-xl: 22px;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --transition: 220ms ease;
         }
 
         * {
             box-sizing: border-box;
         }
 
-        html, body {
+        html,
+        body {
             margin: 0;
             min-height: 100%;
-            background: var(--bg);
+            background: radial-gradient(circle at 8% -20%, #fdfefe, var(--bg) 65%);
             color: var(--text);
-            font-family: Arial, sans-serif;
+            font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
         }
 
         body {
-            display: flex;
-            justify-content: center;
             padding: 0;
         }
 
         .app-shell {
             width: 100%;
             min-height: 100vh;
-            background: linear-gradient(180deg, #f8fbfd 0%, #eef3f7 100%);
         }
 
         .topbar {
             position: sticky;
             top: 0;
-            z-index: 20;
-            padding: 16px;
-            background: rgba(248, 251, 253, 0.96);
-            backdrop-filter: blur(8px);
-            border-bottom: 1px solid var(--border);
+            z-index: 40;
+            border-bottom: 1px solid rgba(210, 222, 234, 0.85);
+            background: rgba(246, 250, 254, 0.92);
+            backdrop-filter: blur(10px);
         }
 
         .topbar-inner {
-            width: 100%;
-            max-width: 1280px;
+            max-width: 1440px;
             margin: 0 auto;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+        }
+
+        .topbar-title-wrap {
+            min-width: 0;
         }
 
         .topbar-title {
-            margin: 0 0 12px;
-            font-size: 20px;
-            font-weight: 700;
-            text-align: center;
+            margin: 0;
+            font-size: clamp(18px, 2.3vw, 25px);
+            letter-spacing: 0.01em;
+        }
+
+        .topbar-subtitle {
+            margin: 2px 0 0;
+            color: var(--text-soft);
+            font-size: 13px;
         }
 
         .topbar-nav {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            max-width: 480px;
-            margin: 0 auto;
-            align-items: center;
+            grid-template-columns: repeat(2, minmax(110px, 168px));
+            gap: 8px;
         }
 
         .page-body {
-            width: 100%;
-            max-width: 1280px;
+            max-width: 1440px;
             margin: 0 auto;
+            padding: 14px 12px 24px;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
         }
 
         .nav-button,
         .action-button,
         .back-button,
-        .filter-chip {
-            border: 0;
-            border-radius: 14px;
-            padding: 12px 14px;
+        .filter-chip,
+        .map-control-button,
+        .clear-search-button {
+            border: none;
+            border-radius: 11px;
             font: inherit;
             cursor: pointer;
+            transition: background var(--transition), color var(--transition), border-color var(--transition), transform var(--transition), box-shadow var(--transition), opacity var(--transition);
         }
 
         .nav-button {
-            background: var(--surface);
+            padding: 10px 12px;
+            background: #fff;
             color: var(--text);
             box-shadow: inset 0 0 0 1px var(--border);
-            font-weight: 700;
+            font-weight: 650;
         }
 
-        .nav-button[data-screen-target="map-screen"] {
-            font-size: 0.92em;
-        }
-
-        @media (max-width: 699px) {
-            .topbar-nav {
-                gap: 8px;
-            }
-
-            .nav-button {
-                padding: 10px 12px;
-                font-size: 15px;
-            }
-
-            .nav-button[data-screen-target="map-screen"] {
-                font-size: 15px;
-            }
-            .scroll-top-button {
-                right: 16px;
-                bottom: 92px;
-                width: 48px;
-                height: 48px;
-                font-size: 22px;
-            }
-            .clear-search-button {
-                display: block;
-                width: fit-content;
-                margin: 4px auto 0;
-            }
-            #info-panel h2 {
-                font-size: 18px;
-            }
-
-            #info-panel p,
-            #info-panel .info-note,
-            #info-panel span {
-                font-size: 10px;
-                line-height: 1.4;
-            }
-        }
-
-        .nav-button.active,
-        .filter-chip.active,
-        .action-button.primary,
-        .back-button {
-            background: #5f7283;
-            color: #ffffff;
+        .nav-button.active {
+            background: var(--surface-strong);
+            color: #fff;
             box-shadow: none;
         }
 
-        .screen {
-            display: none;
-            padding: 16px;
+        .nav-button:focus-visible,
+        .action-button:focus-visible,
+        .back-button:focus-visible,
+        .filter-chip:focus-visible,
+        .search-input:focus-visible,
+        .map-control-button:focus-visible,
+        .clear-search-button:focus-visible {
+            outline: 2px solid rgba(14, 129, 198, 0.26);
+            outline-offset: 2px;
         }
 
-        .screen.active {
-            display: block;
+        .map-layout {
+            display: grid;
+            gap: 14px;
+        }
+
+        .left-column {
+            display: grid;
+            gap: 12px;
+            align-content: start;
         }
 
         .panel,
@@ -167,23 +160,24 @@
         .filter-panel {
             background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: 10px;
-            box-shadow: var(--shadow);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
         }
 
         .panel,
-        .filter-panel,
         .detail-card,
+        .filter-panel,
         .list-card {
-            padding: 16px;
+            padding: 15px;
         }
 
         .panel h2,
+        .panel h3,
         .detail-card h2,
         .screen-title,
         .filter-title {
-            margin: 0 0 12px;
-            font-size: 18px;
+            margin: 0 0 10px;
+            font-size: 17px;
         }
 
         .panel p,
@@ -192,9 +186,10 @@
         .screen-subtitle,
         .filter-description,
         .info-note {
-            margin: 6px 0;
+            margin: 5px 0;
             color: var(--text-soft);
             line-height: 1.45;
+            font-size: 14px;
         }
 
         .panel strong,
@@ -204,76 +199,139 @@
             color: var(--text);
         }
 
-        .map-layout {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
+        .info-grid {
+            display: grid;
+            gap: 7px;
         }
 
-        .left-column {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
+        .info-row {
+            display: grid;
+            grid-template-columns: minmax(130px, 148px) 1fr;
+            gap: 8px;
+            font-size: 14px;
+            line-height: 1.4;
         }
 
-        .map-card {
-            flex: 1;
-            min-width: 0;
-            overflow: hidden;
-            border-radius: 0;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-            background: var(--surface);
+        .info-row b {
+            color: var(--text);
+            font-weight: 650;
+        }
+
+        .category-inline {
+            display: inline-flex;
+            margin-top: 2px;
         }
 
         .legend-panel {
             overflow: hidden;
-            max-height: 300px;  /* ← добавьте */
         }
-        .legend-panel img {
-            display: block;
-            width: 100%;
-            height: auto;
-            max-height: 150px;
-            object-fit: contain;
-            margin: 0 auto;
+
+        .legend-meta {
+            margin: 0 0 10px;
+            font-size: 13px;
+            color: var(--text-soft);
         }
+
         .legend-image {
-            max-height: 150px;
-            display: block;
             width: 100%;
-            height: auto;
-            object-fit: contain;  /* ← чтобы вписать в блок */
-            margin: 0 auto;
+            max-height: 300px;
+            object-fit: contain;
+            display: block;
+            border-radius: var(--radius-md);
+            background: var(--surface-soft);
+        }
+
+        .map-card {
+            min-width: 0;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-strong);
+            background: var(--surface);
+            transition: width var(--transition), box-shadow var(--transition), transform var(--transition);
+            position: relative;
+        }
+
+        .map-toolbar {
+            position: absolute;
+            z-index: 500;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            pointer-events: none;
+        }
+
+        .map-toolbar-group {
+            display: flex;
+            gap: 8px;
+            pointer-events: auto;
+        }
+
+        .map-control-button {
+            padding: 8px 10px;
+            min-height: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--text);
+            border: 1px solid rgba(210, 222, 234, 0.95);
+            box-shadow: 0 6px 14px rgba(13, 40, 61, 0.16);
+            font-size: 13px;
+            font-weight: 650;
+            white-space: nowrap;
+        }
+
+        .map-control-button:hover {
+            transform: translateY(-1px);
         }
 
         #map {
             width: 100%;
-            height: 62vh;
-            min-height: 420px;
+            height: clamp(360px, 62vh, 860px);
+            transition: height var(--transition);
         }
 
         .screen-header {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: space-between;
-            gap: 12px;
-            margin-bottom: 14px;
+            gap: 10px;
+            margin-bottom: 12px;
         }
 
         .filter-panel {
-            margin-bottom: 14px;
+            margin-bottom: 12px;
+        }
+
+        .search-row {
+            display: grid;
+            gap: 8px;
+            margin: 10px 0 10px;
         }
 
         .search-input {
             width: 100%;
-            padding: 12px 14px;
-            border-radius: 14px;
+            padding: 11px 13px;
+            min-height: 44px;
+            border-radius: 11px;
             border: 1px solid var(--border);
-            background: #ffffff;
-            color: var(--text);
             font: inherit;
-            margin-bottom: 2px;
+            color: var(--text);
+        }
+
+        .clear-search-button {
+            padding: 10px 14px;
+            min-height: 44px;
+            background: var(--surface-soft);
+            color: var(--text);
+            border: 1px solid var(--border);
+            font-weight: 650;
+            justify-self: start;
+        }
+
+        .clear-search-button:hover {
+            background: #ecf2f8;
         }
 
         .filter-chips,
@@ -283,94 +341,275 @@
             gap: 10px;
         }
 
+        .filter-chip {
+            min-height: 42px;
+            padding: 10px 12px;
+            background: var(--surface-soft);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-weight: 650;
+            text-align: left;
+        }
+
+        .filter-chip.active {
+            background: #e3f1fb;
+            border-color: #a9d4ef;
+            color: #0a5f92;
+        }
+
+        .list-wrap {
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+        }
+
+        .list-card {
+            display: grid;
+            gap: 8px;
+            min-height: 188px;
+            transition: box-shadow var(--transition), transform var(--transition), border-color var(--transition);
+        }
+
+        .list-card:hover {
+            border-color: #9fc4de;
+            transform: translateY(-1px);
+        }
+
+        .list-card.selected {
+            border-color: #7db8df;
+            box-shadow: 0 0 0 2px rgba(126, 182, 222, 0.3), var(--shadow-soft);
+        }
+
         .list-card h3 {
-            margin: 0 0 8px;
-            font-size: 17px;
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.35;
+        }
+
+        .list-id {
+            color: var(--text-soft);
+            font-size: 12px;
+            font-weight: 600;
         }
 
         .list-actions {
+            margin-top: 4px;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 14px;
+            gap: 8px;
         }
 
         .action-button,
-        .filter-chip {
-            background: var(--surface-muted);
-            color: var(--text);
-            box-shadow: inset 0 0 0 1px var(--border);
-            font-weight: 700;
+        .back-button {
+            min-height: 42px;
+            padding: 9px 11px;
+            font-weight: 650;
         }
 
+        .action-button {
+            background: #f5f8fb;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .action-button.primary,
         .back-button {
-            padding-inline: 16px;
-            white-space: nowrap;
+            background: var(--surface-strong);
+            color: #fff;
+            border: 1px solid transparent;
+        }
+
+        .action-button.primary:hover,
+        .back-button:hover {
+            background: #12364f;
         }
 
         .category-badge {
             display: inline-flex;
-            margin-top: 10px;
+            align-items: center;
             padding: 6px 10px;
             border-radius: 999px;
-            background: var(--accent-soft);
-            color: #5f7283;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
+            width: fit-content;
+            margin-top: 2px;
         }
 
-        .category-badge.badge-safe {
-            background: var(--status-safe);
-            color: #ffffff;
+        .badge-safe {
+            background: rgba(31, 157, 90, 0.14);
+            color: #0b6b3b;
         }
 
-        .category-badge.badge-caution {
-            background: var(--status-caution);
-            color: #ffffff;
+        .badge-caution {
+            background: rgba(219, 156, 8, 0.18);
+            color: #8e6100;
         }
 
-        .category-badge.badge-danger {
-            background: var(--status-danger);
-            color: #ffffff;
+        .badge-danger {
+            background: rgba(219, 74, 64, 0.16);
+            color: #a22d26;
+        }
+
+        .detail-card h2 {
+            margin-bottom: 12px;
+        }
+
+        .detail-fields {
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+        }
+
+        .detail-field {
+            background: var(--surface-soft);
+            border: 1px solid #dce6f0;
+            border-radius: 11px;
+            padding: 10px 11px;
+            margin: 0;
+        }
+
+        .counter-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 32px;
+            height: 24px;
+            padding: 0 8px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            background: #e2eef8;
+            color: #29506c;
+            margin-left: 6px;
         }
 
         .empty-state {
             padding: 18px;
-            border-radius: 18px;
-            background: var(--surface);
-            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            border: 1px dashed #bfd2e2;
+            background: linear-gradient(180deg, #fbfdff 0%, #f3f9ff 100%);
             color: var(--text-soft);
-            box-shadow: var(--shadow);
+            text-align: center;
         }
 
+        .skeleton {
+            background: linear-gradient(90deg, #e9f0f7 25%, #f6f9fc 50%, #e9f0f7 75%);
+            background-size: 220% 100%;
+            animation: loading 1.3s linear infinite;
+        }
 
-        @media (min-width: 700px) {
+        .skeleton-card {
+            border-radius: var(--radius-lg);
+            min-height: 160px;
+            border: 1px solid #dee8f2;
+        }
+
+        @keyframes loading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .scroll-top-button {
+            position: fixed;
+            right: 14px;
+            bottom: 18px;
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 50%;
+            background: #173042;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(14, 34, 51, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(9px);
+            transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+            z-index: 1200;
+        }
+
+        .scroll-top-button.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .leaflet-tooltip {
+            border-radius: 8px;
+            border: 1px solid #cedceb;
+            box-shadow: 0 8px 18px rgba(12, 35, 52, 0.2);
+            color: #123149;
+            font-weight: 520;
+        }
+
+        .beach-marker {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            box-shadow: 0 3px 10px rgba(14, 37, 53, 0.32);
+            transform: translate(-50%, -50%);
+            transition: width var(--transition), height var(--transition), box-shadow var(--transition);
+        }
+
+        .beach-marker.selected {
+            width: 26px;
+            height: 26px;
+            box-shadow: 0 0 0 6px rgba(9, 122, 188, 0.22), 0 5px 14px rgba(14, 37, 53, 0.42);
+        }
+
+        .beach-marker.safe {
+            background: var(--status-safe);
+        }
+
+        .beach-marker.caution {
+            background: var(--status-caution);
+        }
+
+        .beach-marker.danger {
+            background: var(--status-danger);
+        }
+
+        #map-screen.is-map-expanded .map-layout {
+            grid-template-columns: 1fr;
+        }
+
+        #map-screen.is-map-expanded .left-column {
+            opacity: 0;
+            visibility: hidden;
+            max-height: 0;
+            overflow: hidden;
+            pointer-events: none;
+            transition: opacity var(--transition), max-height var(--transition);
+        }
+
+        #map-screen.is-map-expanded .map-card {
+            box-shadow: 0 26px 50px rgba(9, 29, 46, 0.25);
+        }
+
+        #map-screen.is-map-expanded #map {
+            height: calc(100vh - 140px);
+            min-height: 480px;
+        }
+
+        @media (min-width: 820px) {
             body {
-                padding: 18px;
+                padding: 14px;
             }
 
             .app-shell {
                 border-radius: 28px;
                 overflow: hidden;
-                box-shadow: 0 24px 48px rgba(23, 48, 66, 0.12);
-                min-height: calc(100vh - 36px);
+                box-shadow: 0 30px 50px rgba(12, 35, 55, 0.14);
             }
 
-            .topbar {
-                padding: 20px 24px;
+            .topbar-inner {
+                padding: 16px 20px;
             }
 
-            .screen {
-                padding: 24px;
-            }
-
-            .topbar-title {
-                font-size: 24px;
-            }
-
-            .topbar-nav {
-                grid-template-columns: repeat(2, minmax(180px, 220px));
-                justify-content: center;
+            .page-body {
+                padding: 16px 20px 28px;
             }
 
             .filter-chips {
@@ -379,874 +618,764 @@
 
             .list-wrap {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 14px;
             }
 
             .detail-fields {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 14px 18px;
-            }
-
-            #map {
-                height: 68vh;
-                min-height: 520px;
-            }
-            .clear-search-button {
-                display: block;
-                width: fit-content;
-                margin: 0 auto;
+                gap: 11px;
             }
         }
 
-        @media (min-width: 1024px) {
-            .screen {
-                padding: 28px;
-            }
-
-            .topbar-inner {
-                max-width: 1840px;
-            }
-
-            .page-body {
-                max-width: 1840px;
-            }
-
+        @media (min-width: 1120px) {
             .map-layout {
-                flex-direction: row;
-                align-items: flex-start;
-                gap: 20px;
+                grid-template-columns: minmax(280px, 320px) 1fr;
+                gap: 16px;
             }
 
             .left-column {
-                width: 320px;
-                flex: 0 0 320px;
                 position: sticky;
-                top: 112px;
-            }
-            .topbar-title,
-            .panel h2,
-            .detail-card h2,
-            .screen-title,
-            .filter-title,
-            .list-card h3,
-            .nav-button,
-            .action-button,
-            .back-button,
-            .filter-chip,
-            .search-input,
-            .panel p,
-            .detail-field,
-            .list-meta,
-            .screen-subtitle,
-            .filter-description,
-            .info-note,
-            .category-badge {
-                font-size: 14px;
+                top: 86px;
             }
 
             #map {
-                height: calc(100vh - 145px);
-                min-height: 680px;
+                height: calc(100vh - 170px);
+                min-height: 650px;
+            }
+
+            #map-screen.is-map-expanded #map {
+                height: calc(100vh - 124px);
+                min-height: 700px;
             }
 
             .list-wrap {
                 grid-template-columns: repeat(3, minmax(0, 1fr));
-                gap: 16px;
-            }
-            .topbar-title {
-                font-size: 24px;
-            }
-            .list-card {
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
             }
         }
 
-        @media (min-width: 1440px) {
-            .topbar-inner,
-            .page-body {
-                max-width: 1880px;
+        @media (max-width: 819px) {
+            .topbar-inner {
+                flex-direction: column;
+                align-items: stretch;
             }
 
-            .map-layout {
-                gap: 22px;
+            .topbar-nav {
+                width: 100%;
+                grid-template-columns: 1fr 1fr;
             }
 
-            .left-column {
-                width: 340px;
-                flex-basis: 340px;
+            .topbar-subtitle {
+                font-size: 12px;
+            }
+
+            .screen-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-row {
+                grid-template-columns: 1fr;
+            }
+
+            .clear-search-button {
+                width: 100%;
+            }
+
+            .filter-chips {
+                grid-template-columns: 1fr;
+            }
+
+            .list-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .map-toolbar {
+                right: 8px;
+                left: 8px;
+            }
+
+            .map-control-button {
+                min-height: 42px;
+                padding: 8px 10px;
             }
 
             #map {
+                height: min(62vh, 560px);
+                min-height: 340px;
+            }
+
+            #map-screen.is-map-expanded #map {
                 height: calc(100vh - 130px);
-                min-height: 760px;
+                min-height: 400px;
+            }
+
+            .info-row {
+                grid-template-columns: 1fr;
+                gap: 2px;
             }
         }
-        .scroll-top-button {
-            position: fixed;
-            right: 20px;
-            bottom: 88px;
-            width: 52px;
-            height: 52px;
-            border: none;
-            border-radius: 50%;
-            background: #1f2937;
-            color: #ffffff;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(12px);
-            transition:
-                opacity 0.2s ease,
-                visibility 0.2s ease,
-                transform 0.2s ease;
-            z-index: 2000;
-        }
 
-        .scroll-top-button.visible {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-        .clear-search-button {
-            display: block;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto;
-            padding: 8px 70px;
-            border: none;
-            border-radius: 12px;
-            background: #544646;
-            color: #ffffff;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            width: auto;
-            min-width: 88px;
-            transition: opacity 0.2s ease;
-        }
-
-        .clear-search-button:hover {
-            opacity: 0.85;
-            background: #ff0000;
-            color: #ffffff;
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                transition: none !important;
+                animation: none !important;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="app-shell">
-        <header class="topbar">
-            <div class="topbar-inner">
+<div class="app-shell">
+    <header class="topbar">
+        <div class="topbar-inner">
+            <div class="topbar-title-wrap">
                 <h1 class="topbar-title">Мониторинг пляжей Севастополя</h1>
-                <div class="topbar-nav">
-                    <button type="button" class="nav-button active" data-screen-target="map-screen">Карта</button>
-                    <button type="button" class="nav-button" data-screen-target="list-screen">Доступные пляжи</button>
+                <p class="topbar-subtitle">Оценка условий купания и геозон по уровню волнения</p>
+            </div>
+            <div class="topbar-nav">
+                <button type="button" class="nav-button active" data-screen-target="map-screen">Карта</button>
+                <button type="button" class="nav-button" data-screen-target="list-screen">Список пляжей</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="page-body">
+        <section id="map-screen" class="screen active">
+            <div class="map-layout">
+                <aside class="left-column">
+                    <div id="info-panel" class="panel">
+                        <h2>Текущий пляж</h2>
+                        <div class="info-grid">
+                            <div class="info-row"><b>Название</b><span id="info-name">Загрузка...</span></div>
+                            <div class="info-row"><b>Номер</b><span id="info-number">-</span></div>
+                            <div class="info-row"><b>Уровень волнения</b><span id="info-wave-level">-</span></div>
+                            <div class="info-row"><b>Описание</b><span id="info-wave-text">Нет данных</span></div>
+                            <div class="info-row"><b>Категория</b><span id="info-category-badge" class="category-inline category-badge">-</span></div>
+                        </div>
+                        <p class="info-note">
+                            Цвета статусов соответствуют диапазонам: <strong>0-2</strong> / <strong>3-5</strong> / <strong>6+</strong>.
+                        </p>
+                    </div>
+
+                    <div class="panel legend-panel">
+                        <h3>Легенда статусов</h3>
+                        <p class="legend-meta">Маркер, карточка и полигон связаны единым цветом категории безопасности.</p>
+                        <img class="legend-image" src="{{ asset('./flag-colors.png') }}" alt="Цвета флажков">
+                    </div>
+                </aside>
+
+                <section class="map-card">
+                    <div class="map-toolbar">
+                        <div class="map-toolbar-group">
+                            <button id="fit-map-button" type="button" class="map-control-button">Показать все</button>
+                        </div>
+                        <div class="map-toolbar-group">
+                            <button id="toggle-map-size-button" type="button" class="map-control-button">Развернуть карту</button>
+                        </div>
+                    </div>
+                    <div id="map"></div>
+                </section>
+            </div>
+        </section>
+
+        <section id="list-screen" class="screen">
+            <div class="screen-header">
+                <div>
+                    <h2 class="screen-title">Список пляжей <span id="results-counter" class="counter-badge">0</span></h2>
+                    <p class="screen-subtitle">Быстрый поиск, фильтрация по статусам и переход к объекту на карте.</p>
                 </div>
             </div>
-        </header>
 
-        <main class="page-body">
-            <section id="map-screen" class="screen active">
-                <div class="map-layout">
-                    <div class="left-column">
-                        <div id="info-panel" class="panel">
-                            <h2>Информация о пляже</h2>
-                            <p><strong>Название:</strong> <span id="info-name">Выберите пляж на карте</span></p>
-                            <p><strong>Номер:</strong> <span id="info-number">-</span></p>
-                            <p><strong>Уровень волнения:</strong> <span id="info-wave-level">-</span></p>
-                            <p><strong>Описание:</strong> <span id="info-wave-text">Нет данных</span></p>
-                            <p><strong>Категория:</strong> <span id="info-category">-</span></p>
-                            <p class="info-note">Категории для учебного прототипа основаны на уровне волнения и показывают пригодность пляжа для купания.</p>
-                        </div>
-
-                        <div class="panel legend-panel">
-                            <h3>Пляжи имеют цвета в соответствии с флажками:</h3>
-                            <img class="legend-image" src="{{ asset('./flag-colors.png') }}" alt="Цвета флажков">
-                        </div>
-                    </div>
-
-                    <div class="map-card">
-                        <div id="map"></div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="list-screen" class="screen">
-                <div class="screen-header">
-                    <div>
-                        <h2 class="screen-title">Список пляжей</h2>
-                        <p class="screen-subtitle">Здесь можно искать пляжи по названию и фильтровать их по учебным категориям безопасности.</p>
-                    </div>
-                </div>
-
-                <div class="filter-panel">
-                    <h3 class="filter-title">Поиск и категории</h3>
-                    <p class="filter-description">Поиск работает по названию, а категории рассчитываются по значению уровень волнения.</p>
+            <div class="filter-panel">
+                <h3 class="filter-title">Поиск и фильтры</h3>
+                <p class="filter-description">Список обновляется мгновенно по названию и категории безопасности.</p>
+                <div class="search-row">
                     <input id="search-input" class="search-input" type="text" placeholder="Введите часть названия пляжа">
-                    <button type="button" id="clear-search-button" class="clear-search-button">
-                        Очистить
-                    </button>
-                    <div class="filter-chips">
-                        <button type="button" class="filter-chip active" data-category="all">Все пляжи</button>
-                        <button type="button" class="filter-chip" data-category="safe">Купание допустимо</button>
-                        <button type="button" class="filter-chip" data-category="caution">Нужна осторожность</button>
-                        <button type="button" class="filter-chip" data-category="danger">Купание не рекомендуется</button>
-                    </div>
+                    <button type="button" id="clear-search-button" class="clear-search-button">Очистить поиск</button>
                 </div>
-
-                <div id="beaches-list" class="list-wrap"></div>
-            </section>
-
-            <section id="detail-screen" class="screen">
-                <div class="screen-header">
-                    <div>
-                        <h2 class="screen-title">Подробная информация</h2>
-                        <p class="screen-subtitle">Детали выбранного пляжа.</p>
-                    </div>
-                    <button type="button" id="detail-back-button" class="back-button">Назад</button>
+                <div class="filter-chips">
+                    <button type="button" class="filter-chip active" data-category="all">Все пляжи</button>
+                    <button type="button" class="filter-chip" data-category="safe">Купание допустимо</button>
+                    <button type="button" class="filter-chip" data-category="caution">Нужна осторожность</button>
+                    <button type="button" class="filter-chip" data-category="danger">Купание не рекомендуется</button>
                 </div>
-                <div class="detail-card">
-                    <h2 id="detail-name">Пляж не выбран</h2>
-                    <div class="detail-fields">
-                        <div class="detail-field"><strong>Номер:</strong> <span id="detail-number">-</span></div>
-                        <div class="detail-field"><strong>Уровень волнения:</strong> <span id="detail-wave-level">-</span></div>
-                        <div class="detail-field"><strong>Описание волнения:</strong> <span id="detail-wave-text">Нет данных</span></div>
-                        <div class="detail-field"><strong>Категория:</strong> <span id="detail-category">-</span></div>
-                        <div class="detail-field"><strong>Широта:</strong> <span id="detail-latitude">-</span></div>
-                        <div class="detail-field"><strong>Долгота:</strong> <span id="detail-longitude">-</span></div>
-                    </div>
-                </div>
-            </section>
-        </main>
-    </div>
-    <button id="scroll-top-button" class="scroll-top-button" type="button">
-    ↑
-    </button>
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
-    <script>
-        const map = L.map('map').setView([44.61, 33.52], 11);
-        map.createPane('beachPolygonsPane');
-        map.getPane('beachPolygonsPane').style.zIndex = '350';
-        map.getPane('beachPolygonsPane').style.pointerEvents = 'auto';
-        const infoName = document.getElementById('info-name');
-        const infoNumber = document.getElementById('info-number');
-        const infoWaveLevel = document.getElementById('info-wave-level');
-        const infoWaveText = document.getElementById('info-wave-text');
-        const infoCategory = document.getElementById('info-category');
-        const beachesList = document.getElementById('beaches-list');
-        const detailName = document.getElementById('detail-name');
-        const detailNumber = document.getElementById('detail-number');
-        const detailWaveLevel = document.getElementById('detail-wave-level');
-        const detailWaveText = document.getElementById('detail-wave-text');
-        const detailCategory = document.getElementById('detail-category');
-        const detailLatitude = document.getElementById('detail-latitude');
-        const detailLongitude = document.getElementById('detail-longitude');
-        const detailBackButton = document.getElementById('detail-back-button');
-        const navButtons = document.querySelectorAll('[data-screen-target]');
-        const screens = document.querySelectorAll('.screen');
-        const searchInput = document.getElementById('search-input');
-        const filterChips = document.querySelectorAll('[data-category]');
-        const cssVariables = getComputedStyle(document.documentElement);
-        const scrollTopButton = document.getElementById('scroll-top-button');
-        const clearSearchButton = document.getElementById('clear-search-button');
+            </div>
 
-        const polygonColors = {
-            safe: cssVariables.getPropertyValue('--status-safe').trim(),
-            caution: cssVariables.getPropertyValue('--status-caution').trim(),
-            danger: cssVariables.getPropertyValue('--status-danger').trim()
+            <div id="beaches-list" class="list-wrap"></div>
+        </section>
+
+        <section id="detail-screen" class="screen">
+            <div class="screen-header">
+                <div>
+                    <h2 class="screen-title">Подробная информация</h2>
+                    <p class="screen-subtitle">Детальная карточка выбранного пляжа и его текущего статуса.</p>
+                </div>
+                <button type="button" id="detail-back-button" class="back-button">Назад</button>
+            </div>
+            <article class="detail-card">
+                <h2 id="detail-name">Пляж не выбран</h2>
+                <div class="detail-fields">
+                    <div class="detail-field"><strong>Номер:</strong> <span id="detail-number">-</span></div>
+                    <div class="detail-field"><strong>Уровень волнения:</strong> <span id="detail-wave-level">-</span></div>
+                    <div class="detail-field"><strong>Описание волнения:</strong> <span id="detail-wave-text">Нет данных</span></div>
+                    <div class="detail-field"><strong>Категория:</strong> <span id="detail-category">-</span></div>
+                    <div class="detail-field"><strong>Широта:</strong> <span id="detail-latitude">-</span></div>
+                    <div class="detail-field"><strong>Долгота:</strong> <span id="detail-longitude">-</span></div>
+                </div>
+            </article>
+        </section>
+    </main>
+</div>
+
+<button id="scroll-top-button" class="scroll-top-button" type="button">↑</button>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
+<script>
+    const mapScreen = document.getElementById('map-screen');
+    const mapElement = document.getElementById('map');
+    const map = L.map(mapElement).setView([44.61, 33.52], 11);
+    map.createPane('beachPolygonsPane');
+    map.getPane('beachPolygonsPane').style.zIndex = '350';
+    map.getPane('beachPolygonsPane').style.pointerEvents = 'auto';
+
+    const infoName = document.getElementById('info-name');
+    const infoNumber = document.getElementById('info-number');
+    const infoWaveLevel = document.getElementById('info-wave-level');
+    const infoWaveText = document.getElementById('info-wave-text');
+    const infoCategoryBadge = document.getElementById('info-category-badge');
+
+    const beachesList = document.getElementById('beaches-list');
+    const resultsCounter = document.getElementById('results-counter');
+    const detailName = document.getElementById('detail-name');
+    const detailNumber = document.getElementById('detail-number');
+    const detailWaveLevel = document.getElementById('detail-wave-level');
+    const detailWaveText = document.getElementById('detail-wave-text');
+    const detailCategory = document.getElementById('detail-category');
+    const detailLatitude = document.getElementById('detail-latitude');
+    const detailLongitude = document.getElementById('detail-longitude');
+    const detailBackButton = document.getElementById('detail-back-button');
+    const navButtons = document.querySelectorAll('[data-screen-target]');
+    const screens = document.querySelectorAll('.screen');
+    const searchInput = document.getElementById('search-input');
+    const filterChips = document.querySelectorAll('[data-category]');
+    const scrollTopButton = document.getElementById('scroll-top-button');
+    const clearSearchButton = document.getElementById('clear-search-button');
+    const toggleMapSizeButton = document.getElementById('toggle-map-size-button');
+    const fitMapButton = document.getElementById('fit-map-button');
+
+    const cssVariables = getComputedStyle(document.documentElement);
+    const polygonColors = {
+        safe: cssVariables.getPropertyValue('--status-safe').trim(),
+        caution: cssVariables.getPropertyValue('--status-caution').trim(),
+        danger: cssVariables.getPropertyValue('--status-danger').trim()
+    };
+
+    const beaches = [];
+    const markersById = new Map();
+    const polygonLayers = [];
+    let beachesPolygonLayer = null;
+    let selectedBeach = null;
+    let lastNonDetailScreen = 'map-screen';
+    let activeCategory = 'all';
+    let searchQuery = '';
+    let isMapExpanded = false;
+
+    function getWaveLevelText(level) {
+        const numericLevel = Number(level);
+        if (Number.isNaN(numericLevel)) return 'Нет данных';
+        if (numericLevel === 0) return 'Слабое волнение';
+        if (numericLevel <= 2) return 'Небольшое волнение';
+        if (numericLevel <= 4) return 'Умеренное волнение';
+        if (numericLevel <= 6) return 'Заметное волнение';
+        if (numericLevel <= 9) return 'Сильное волнение';
+        return 'Очень сильное волнение';
+    }
+
+    function getBeachCategoryKey(beach) {
+        if (beach && beach.category_key) return beach.category_key;
+        const level = Number(beach?.wave_level);
+        if (Number.isNaN(level)) return 'danger';
+        if (level <= 2) return 'safe';
+        if (level <= 5) return 'caution';
+        return 'danger';
+    }
+
+    function getBeachCategoryLabel(beach) {
+        if (beach && beach.category_label) return beach.category_label;
+        const key = getBeachCategoryKey(beach || {});
+        if (key === 'safe') return 'Купание допустимо';
+        if (key === 'caution') return 'Нужна осторожность';
+        return 'Купание не рекомендуется';
+    }
+
+    function getCategoryBadgeClass(beach) {
+        const key = getBeachCategoryKey(beach);
+        if (key === 'safe') return 'badge-safe';
+        if (key === 'caution') return 'badge-caution';
+        return 'badge-danger';
+    }
+
+    function renderLoadingState() {
+        beachesList.innerHTML = `
+            <div class="skeleton skeleton-card"></div>
+            <div class="skeleton skeleton-card"></div>
+            <div class="skeleton skeleton-card"></div>
+        `;
+    }
+
+    function updateInfoPanel(beach = {}) {
+        infoName.textContent = beach.name || 'Без названия';
+        infoNumber.textContent = beach.number ?? '-';
+        infoWaveLevel.textContent = beach.wave_level ?? '-';
+        infoWaveText.textContent = getWaveLevelText(beach.wave_level);
+        infoCategoryBadge.textContent = getBeachCategoryLabel(beach);
+        infoCategoryBadge.className = 'category-inline category-badge ' + getCategoryBadgeClass(beach);
+    }
+
+    function updateDetailScreen(beach = {}) {
+        detailName.textContent = beach.name || 'Без названия';
+        detailNumber.textContent = beach.number ?? '-';
+        detailWaveLevel.textContent = beach.wave_level ?? '-';
+        detailWaveText.textContent = getWaveLevelText(beach.wave_level);
+        detailCategory.textContent = getBeachCategoryLabel(beach);
+        detailLatitude.textContent = beach.latitude ?? '-';
+        detailLongitude.textContent = beach.longitude ?? '-';
+    }
+
+    function requestMapResize() {
+        [0, 140, 260, 420].forEach(delay => {
+            window.setTimeout(() => map.invalidateSize(), delay);
+        });
+    }
+
+    function setActiveScreen(screenId) {
+        screens.forEach(screen => {
+            screen.classList.toggle('active', screen.id === screenId);
+        });
+
+        navButtons.forEach(button => {
+            button.classList.toggle('active', button.dataset.screenTarget === screenId);
+        });
+
+        if (screenId !== 'detail-screen') {
+            lastNonDetailScreen = screenId;
+        }
+
+        if (screenId === 'map-screen') {
+            requestMapResize();
+        }
+    }
+
+    function buildPopupContent(beach) {
+        return '<b>' + (beach.name || 'Без названия') + '</b><br>' +
+            'Номер: ' + (beach.number ?? '-') + '<br>' +
+            'Уровень волнения: ' + (beach.wave_level ?? '-') + '<br>' +
+            'Описание: ' + getWaveLevelText(beach.wave_level) + '<br>' +
+            'Категория: ' + getBeachCategoryLabel(beach);
+    }
+
+    function buildPolygonPopupContent(properties = {}) {
+        const lines = [];
+        const hasPrimaryData = properties.name ||
+            (properties.number !== undefined && properties.number !== null && properties.number !== '') ||
+            (properties.wave_level !== undefined && properties.wave_level !== null && properties.wave_level !== '') ||
+            properties.category_label;
+
+        if (properties.name) lines.push('<b>' + properties.name + '</b>');
+        if (properties.number !== undefined && properties.number !== null && properties.number !== '') lines.push('Номер: ' + properties.number);
+        if (properties.wave_level !== undefined && properties.wave_level !== null && properties.wave_level !== '') {
+            lines.push('Уровень волнения: ' + properties.wave_level);
+            lines.push('Описание: ' + getWaveLevelText(properties.wave_level));
+        }
+        if (hasPrimaryData) lines.push('Категория: ' + getBeachCategoryLabel(properties));
+        return lines.join('<br>');
+    }
+
+    function getPolygonStyle(properties = {}, isSelected = false) {
+        const categoryKey = getBeachCategoryKey(properties);
+        const color = polygonColors[categoryKey] || polygonColors.danger;
+        return {
+            color: color,
+            weight: isSelected ? 3 : 2,
+            opacity: isSelected ? 1 : 0.95,
+            fillColor: color,
+            fillOpacity: isSelected ? 0.42 : 0.27
         };
+    }
 
-        const beaches = [];
-        const markersById = new Map();
-        let beachesPolygonLayer = null;
-        let selectedBeach = null;
-        let lastNonDetailScreen = 'map-screen';
-        let activeCategory = 'all';
-        let searchQuery = '';
+    function createMarkerIcon(categoryKey, isSelectedMarker) {
+        return new L.Icon.Default();
+    }
 
-        function getWaveLevelText(level) {
-            const numericLevel = Number(level);
+    function refreshMarkerStyles() {
+        markersById.forEach((marker, beachId) => {
+            const beach = beaches.find(item => item.id === beachId);
+            if (!beach) return;
+            const isSelectedMarker = Boolean(selectedBeach && selectedBeach.id === beach.id);
+            marker.setZIndexOffset(isSelectedMarker ? 2000 : 1000);
+        });
+    }
 
-            if (Number.isNaN(numericLevel)) {
-                return 'Нет данных';
-            }
-
-            if (numericLevel === 0) {
-                return 'Слабое волнение';
-            }
-
-            if (numericLevel <= 2) {
-                return 'Небольшое волнение';
-            }
-
-            if (numericLevel <= 4) {
-                return 'Умеренное волнение';
-            }
-
-            if (numericLevel <= 6) {
-                return 'Заметное волнение';
-            }
-
-            if (numericLevel <= 9) {
-                return 'Сильное волнение';
-            }
-
-            return 'Очень сильное волнение';
-        }
-
-        function getBeachCategoryKey(beach) {
-            if (beach.category_key) {
-                return beach.category_key;
-            }
-
-            const level = Number(beach.wave_level);
-
-            if (Number.isNaN(level)) {
-                return 'danger';
-            }
-
-            if (level <= 2) {
-                return 'safe';
-            }
-
-            if (level <= 5) {
-                return 'caution';
-            }
-
-            return 'danger';
-        }
-
-        function getBeachCategoryLabel(beach) {
-            if (beach.category_label) {
-                return beach.category_label;
-            }
-
-            const categoryKey = getBeachCategoryKey(beach);
-
-            if (categoryKey === 'safe') {
-                return 'Купание допустимо';
-            }
-
-            if (categoryKey === 'caution') {
-                return 'Нужна осторожность';
-            }
-
-            return 'Купание не рекомендуется';
-        }
-
-        function getBeachCategoryBadgeClass(beach) {
-            const categoryKey = getBeachCategoryKey(beach);
-
-            if (categoryKey === 'safe') {
-                return 'badge-safe';
-            }
-
-            if (categoryKey === 'caution') {
-                return 'badge-caution';
-            }
-
-            return 'badge-danger';
-        }
-
-        function updateInfoPanel(beach = {}) {
-            infoName.textContent = beach.name || 'Без названия';
-            infoNumber.textContent = beach.number ?? '-';
-            infoWaveLevel.textContent = beach.wave_level ?? '-';
-            infoWaveText.textContent = getWaveLevelText(beach.wave_level);
-            infoCategory.textContent = getBeachCategoryLabel(beach);
-        }
-
-        function updateDetailScreen(beach = {}) {
-            detailName.textContent = beach.name || 'Без названия';
-            detailNumber.textContent = beach.number ?? '-';
-            detailWaveLevel.textContent = beach.wave_level ?? '-';
-            detailWaveText.textContent = getWaveLevelText(beach.wave_level);
-            detailCategory.textContent = getBeachCategoryLabel(beach);
-            detailLatitude.textContent = beach.latitude ?? '-';
-            detailLongitude.textContent = beach.longitude ?? '-';
-        }
-
-        function setActiveScreen(screenId) {
-            screens.forEach(screen => {
-                screen.classList.toggle('active', screen.id === screenId);
-            });
-
-            navButtons.forEach(button => {
-                button.classList.toggle('active', button.dataset.screenTarget === screenId);
-            });
-
-            if (screenId !== 'detail-screen') {
-                lastNonDetailScreen = screenId;
-            }
-
-            if (screenId === 'map-screen') {
-                setTimeout(() => {
-                    map.invalidateSize();
-                }, 0);
+    function getMapDataBounds() {
+        let combinedBounds = null;
+        markersById.forEach(marker => {
+            const latLng = marker.getLatLng();
+            const pointBounds = L.latLngBounds(latLng, latLng);
+            combinedBounds = combinedBounds ? combinedBounds.extend(pointBounds) : pointBounds;
+        });
+        if (beachesPolygonLayer && beachesPolygonLayer.getLayers().length > 0) {
+            const polygonBounds = beachesPolygonLayer.getBounds();
+            if (polygonBounds.isValid()) {
+                combinedBounds = combinedBounds ? combinedBounds.extend(polygonBounds) : polygonBounds;
             }
         }
+        return combinedBounds;
+    }
 
-        function buildPopupContent(beach) {
-            return '<b>' + (beach.name || 'Без названия') + '</b><br>' +
-                'Номер: ' + (beach.number ?? '-') + '<br>' +
-                'Уровень волнения: ' + (beach.wave_level ?? '-') + '<br>' +
-                'Описание: ' + getWaveLevelText(beach.wave_level) + '<br>' +
-                'Категория: ' + getBeachCategoryLabel(beach);
+    function fitMapToAvailableData() {
+        const bounds = getMapDataBounds();
+        if (bounds && bounds.isValid()) {
+            map.fitBounds(bounds, { padding: [30, 30] });
         }
+    }
 
-        function buildPolygonPopupContent(properties = {}) {
-            const lines = [];
-            const hasPrimaryData = properties.name ||
-                (properties.number !== undefined && properties.number !== null && properties.number !== '') ||
-                (properties.wave_level !== undefined && properties.wave_level !== null && properties.wave_level !== '') ||
-                properties.category_label;
+    function getBeachPointFeature(beach) {
+        const latitude = Number(beach.latitude);
+        const longitude = Number(beach.longitude);
+        if (Number.isNaN(latitude) || Number.isNaN(longitude)) return null;
+        return turf.point([longitude, latitude]);
+    }
 
-            if (properties.name) {
-                lines.push('<b>' + properties.name + '</b>');
-            }
+    function isBeachRelatedToPolygon(beach, feature) {
+        const beachPoint = getBeachPointFeature(beach);
+        if (!beachPoint || !feature || !feature.geometry) return false;
 
-            if (properties.number !== undefined && properties.number !== null && properties.number !== '') {
-                lines.push('Номер: ' + properties.number);
-            }
-
-            if (properties.wave_level !== undefined && properties.wave_level !== null && properties.wave_level !== '') {
-                lines.push('Уровень волнения: ' + properties.wave_level);
-                lines.push('Описание: ' + getWaveLevelText(properties.wave_level));
-            }
-
-            if (hasPrimaryData) {
-                lines.push('Категория: ' + getBeachCategoryLabel(properties));
-            }
-
-            return lines.join('<br>');
+        try {
+            if (turf.booleanPointInPolygon(beachPoint, feature)) return true;
+            const polygonOutline = turf.polygonToLine(feature);
+            const distanceToPolygonKm = turf.pointToLineDistance(
+                beachPoint,
+                polygonOutline,
+                { units: 'kilometers' }
+            );
+            return distanceToPolygonKm <= 0.4;
+        } catch (error) {
+            console.error('Ошибка сопоставления пляжа и полигона:', error);
+            return false;
         }
+    }
 
-        function getPolygonStyle(properties = {}) {
-            const categoryKey = getBeachCategoryKey(properties);
+    function getRelatedBeachesForFeature(feature) {
+        if (!beaches.length) return [];
+        return beaches.filter(beach => isBeachRelatedToPolygon(beach, feature));
+    }
 
-            const polygonColor = polygonColors[categoryKey] || polygonColors.danger;
+    function buildPolygonHoverContent(feature) {
+        if (!beaches.length) return '<strong>Связанные пляжи</strong><br>Данные пляжей еще загружаются';
+        const relatedBeaches = getRelatedBeachesForFeature(feature);
+        if (relatedBeaches.length === 0) return '<strong>Связанные пляжи</strong><br>Пляжи не найдены';
+        return '<strong>Связанные пляжи</strong><br>' + relatedBeaches.map(beach => beach.name || 'Без названия').join('<br>');
+    }
 
-            return {
-                color: polygonColor,
-                weight: 2,
-                opacity: 0.95,
-                fillColor: polygonColor,
-                fillOpacity: 0.28
-            };
-        }
-        
-        function ensureMarkersOnTop() {
-            markersById.forEach(marker => {
-                marker.setZIndexOffset(1000);
+    function refreshPolygonStyles() {
+        polygonLayers.forEach(entry => {
+            const relatedBeaches = getRelatedBeachesForFeature(entry.feature);
+            const source = relatedBeaches.length > 0 ? relatedBeaches[0] : (entry.feature.properties || {});
+            const isSelectedPolygon = Boolean(selectedBeach && relatedBeaches.some(beach => beach.id === selectedBeach.id));
+            entry.layer.setStyle(getPolygonStyle(source, isSelectedPolygon));
+        });
+    }
 
-                if (typeof marker.bringToFront === 'function') {
-                    marker.bringToFront();
-                }
-            });
-        }
+    function getFilteredBeaches() {
+        return beaches.filter(beach => {
+            const name = String(beach.name || '').toLowerCase();
+            const matchesName = name.includes(searchQuery);
+            const matchesCategory = activeCategory === 'all' || getBeachCategoryKey(beach) === activeCategory;
+            return matchesName && matchesCategory;
+        });
+    }
 
-        function getMapDataBounds() {
-            let combinedBounds = null;
+    function refreshMarkerVisibility() {
+        const visibleIds = new Set(getFilteredBeaches().map(beach => beach.id));
+        markersById.forEach((marker, beachId) => {
+            const isVisible = visibleIds.has(beachId);
+            if (isVisible && !map.hasLayer(marker)) marker.addTo(map);
+            if (!isVisible && map.hasLayer(marker)) map.removeLayer(marker);
+        });
+    }
 
-            markersById.forEach(marker => {
-                const latLng = marker.getLatLng();
-                const pointBounds = L.latLngBounds(latLng, latLng);
-                combinedBounds = combinedBounds ? combinedBounds.extend(pointBounds) : pointBounds;
-            });
+    function renderBeachesList() {
+        const filteredBeaches = getFilteredBeaches();
+        resultsCounter.textContent = String(filteredBeaches.length);
 
-            if (beachesPolygonLayer && beachesPolygonLayer.getLayers().length > 0) {
-                const polygonBounds = beachesPolygonLayer.getBounds();
-
-                if (polygonBounds.isValid()) {
-                    combinedBounds = combinedBounds ? combinedBounds.extend(polygonBounds) : polygonBounds;
-                }
-            }
-
-            return combinedBounds;
-        }
-
-        function fitMapToAvailableData() {
-            const bounds = getMapDataBounds();
-
-            if (bounds && bounds.isValid()) {
-                map.fitBounds(bounds, {
-                    padding: [24, 24]
-                });
-            }
-        }
-
-        function getBeachPointFeature(beach) {
-            const latitude = Number(beach.latitude);
-            const longitude = Number(beach.longitude);
-
-            if (Number.isNaN(latitude) || Number.isNaN(longitude)) {
-                return null;
-            }
-
-            return turf.point([longitude, latitude]);
-        }
-
-        function isBeachRelatedToPolygon(beach, feature) {
-            const beachPoint = getBeachPointFeature(beach);
-
-            if (!beachPoint || !feature || !feature.geometry) {
-                return false;
-            }
-
-            try {
-                if (turf.booleanPointInPolygon(beachPoint, feature)) {
-                    return true;
-                }
-
-                const polygonOutline = turf.polygonToLine(feature);
-
-                const distanceToPolygonKm = turf.pointToLineDistance(
-                    beachPoint,
-                    polygonOutline,
-                    { units: 'kilometers' }
-                );
-
-                return distanceToPolygonKm <= 0.4;
-            } catch (error) {
-                console.error('Ошибка сопоставления пляжа и полигона:', error);
-                return false;
-            }
-        }
-        function getRelatedBeachesForFeature(feature) {
-            if (!beaches.length) {
-                return [];
-            }
-
-            return beaches.filter(beach => isBeachRelatedToPolygon(beach, feature));
-        }
-
-        function buildPolygonHoverContent(feature) {
-            if (!beaches.length) {
-                return '<strong>Связанные пляжи</strong><br>Данные пляжей еще загружаются';
-            }
-
-            const relatedBeaches = getRelatedBeachesForFeature(feature);
-
-            if (relatedBeaches.length === 0) {
-                return '<strong>Связанные пляжи</strong><br>Пляжи не найдены';
-            }
-
-            return '<strong>Связанные пляжи</strong><br>' + relatedBeaches
-                .map(beach => beach.name || 'Без названия')
-                .join('<br>');
-        }
-
-        function getFilteredBeaches() {
-
-            return beaches.filter(beach => {
-                const matchesName = beach.name.toLowerCase().includes(searchQuery);
-                const matchesCategory = activeCategory === 'all' || getBeachCategoryKey(beach) === activeCategory;
-                return matchesName && matchesCategory;
-            });
-        }
-
-        function refreshMarkerVisibility() {
-            const visibleIds = new Set(getFilteredBeaches().map(beach => beach.id));
-
-            markersById.forEach((marker, beachId) => {
-                const isVisible = visibleIds.has(beachId);
-
-                if (isVisible && !map.hasLayer(marker)) {
-                    marker.addTo(map);
-                }
-
-                if (!isVisible && map.hasLayer(marker)) {
-                    map.removeLayer(marker);
-                }
-            });
-        }
-
-        function renderBeachesList() {
-            const filteredBeaches = getFilteredBeaches();
-
-            if (filteredBeaches.length === 0) {
-                beachesList.innerHTML = '<div class="empty-state">По заданным условиям пляжи не найдены.</div>';
-                refreshMarkerVisibility();
-                return;
-            }
-
-            beachesList.innerHTML = filteredBeaches.map(beach => {
-                return `
-                    <article class="list-card">
-                        <h3>${beach.name || 'Без названия'}</h3>
-                        <p class="list-meta"><strong>Номер:</strong> ${beach.number ?? '-'}</p>
-                        <p class="list-meta"><strong>Уровень волнения:</strong> ${beach.wave_level ?? '-'} (${getWaveLevelText(beach.wave_level)})</p>
-                        <span class="category-badge ${getBeachCategoryBadgeClass(beach)}">${getBeachCategoryLabel(beach)}</span>
-                        <div class="list-actions">
-                            <button type="button" class="action-button primary" data-action="show-on-map" data-id="${beach.id}">Показать на карте</button>
-                            <button type="button" class="action-button" data-action="show-details" data-id="${beach.id}">Подробно</button>
-                        </div>
-                    </article>
-                `;
-            }).join('');
-
+        if (filteredBeaches.length === 0) {
+            beachesList.innerHTML = '<div class="empty-state">По вашему запросу пляжи не найдены. Попробуйте снять фильтр или изменить текст поиска.</div>';
             refreshMarkerVisibility();
+            return;
         }
 
-        function renderMapMarkers() {
-            beaches.forEach(beach => {
-                const marker = L.marker([beach.latitude, beach.longitude])
-                    .bindPopup(buildPopupContent(beach))
-                    .addTo(map);
+        beachesList.innerHTML = filteredBeaches.map(beach => {
+            const selectedClass = selectedBeach && selectedBeach.id === beach.id ? ' selected' : '';
+            return `
+                <article class="list-card${selectedClass}">
+                    <div class="list-id">Пляж №${beach.number ?? '-'}</div>
+                    <h3>${beach.name || 'Без названия'}</h3>
+                    <p class="list-meta"><strong>Волнение:</strong> ${beach.wave_level ?? '-'} (${getWaveLevelText(beach.wave_level)})</p>
+                    <span class="category-badge ${getCategoryBadgeClass(beach)}">${getBeachCategoryLabel(beach)}</span>
+                    <div class="list-actions">
+                        <button type="button" class="action-button primary" data-action="show-on-map" data-id="${beach.id}">На карте</button>
+                        <button type="button" class="action-button" data-action="show-details" data-id="${beach.id}">Подробно</button>
+                    </div>
+                </article>
+            `;
+        }).join('');
 
-                marker.on('click', function () {
-                    selectedBeach = beach;
-                    updateInfoPanel(beach);
-                });
+        refreshMarkerVisibility();
+    }
 
-                markersById.set(beach.id, marker);
+    function selectBeach(beach) {
+        selectedBeach = beach;
+        updateInfoPanel(beach);
+        updateDetailScreen(beach);
+        renderBeachesList();
+        refreshMarkerStyles();
+        refreshPolygonStyles();
+    }
+
+    function showSameBeachInfoAsMarker(beach) {
+        selectBeach(beach);
+        const marker = markersById.get(beach.id);
+        if (!marker) return;
+        if (!map.hasLayer(marker)) {
+            marker.addTo(map);
+        }
+        marker.openPopup();
+    }
+
+    function renderMapMarkers() {
+        beaches.forEach(beach => {
+            const marker = L.marker(
+                [beach.latitude, beach.longitude],
+                { icon: createMarkerIcon(getBeachCategoryKey(beach), false) }
+            )
+                .bindPopup(buildPopupContent(beach))
+                .addTo(map);
+
+            marker.on('click', function () {
+                selectBeach(beach);
             });
 
-            ensureMarkersOnTop();
-            fitMapToAvailableData();
+            markersById.set(beach.id, marker);
+        });
+
+        fitMapToAvailableData();
+        refreshMarkerStyles();
+    }
+
+    function renderBeachPolygons(geoJson) {
+        if (beachesPolygonLayer) {
+            map.removeLayer(beachesPolygonLayer);
+            polygonLayers.length = 0;
         }
 
-        function renderBeachPolygons(geoJson) {
-            if (beachesPolygonLayer) {
-                map.removeLayer(beachesPolygonLayer);
-            }
+        beachesPolygonLayer = L.geoJSON(geoJson, {
+            pane: 'beachPolygonsPane',
+            filter: function (feature) {
+                const geometryType = feature?.geometry?.type;
+                return geometryType === 'Polygon' || geometryType === 'MultiPolygon';
+            },
+            style: function (feature) {
+                const relatedBeaches = getRelatedBeachesForFeature(feature);
+                const source = relatedBeaches.length > 0 ? relatedBeaches[0] : (feature.properties || {});
+                const isSelectedPolygon = Boolean(selectedBeach && relatedBeaches.some(beach => beach.id === selectedBeach.id));
+                return getPolygonStyle(source, isSelectedPolygon);
+            },
+            onEachFeature: function (feature, layer) {
+                const properties = feature.properties || {};
+                const popupContent = buildPolygonPopupContent(properties);
+                if (popupContent) layer.bindPopup(popupContent);
 
-            beachesPolygonLayer = L.geoJSON(geoJson, {
-                pane: 'beachPolygonsPane',
-                filter: function (feature) {
-                    const geometryType = feature?.geometry?.type;
-                    return geometryType === 'Polygon' || geometryType === 'MultiPolygon';
-                },
-                style: function (feature) {
-                    const relatedBeaches = getRelatedBeachesForFeature(feature);
-                    const source = relatedBeaches.length > 0
-                        ? relatedBeaches[0]
-                        : (feature.properties || {});
-
-                    return getPolygonStyle(source);
-                },
-                onEachFeature: function (feature, layer) {
-                    const properties = feature.properties || {};
-                    const popupContent = buildPolygonPopupContent(properties);
-
-                    if (popupContent) {
-                        layer.bindPopup(popupContent);
-                    }
-
-                    layer.on('click', function () {
-                        selectedBeach = properties;
+                layer.on('click', function () {
+                    const related = getRelatedBeachesForFeature(feature);
+                    if (related.length > 0) {
+                        showSameBeachInfoAsMarker(related[0]);
+                    } else {
                         updateInfoPanel(properties);
-
                         if (document.getElementById('detail-screen').classList.contains('active')) {
                             updateDetailScreen(properties);
                         }
-                    });
-
-                    layer.on('mouseover', function () {
-                        layer
-                            .bindTooltip(buildPolygonHoverContent(feature), {
-                                sticky: true,
-                                direction: 'top',
-                                opacity: 0.95
-                            })
-                            .openTooltip();
-                    });
-
-                    layer.on('mouseout', function () {
-                        layer.closeTooltip();
-                    });
-                }
-            }).addTo(map);
-
-            fitMapToAvailableData();
-            ensureMarkersOnTop();
-        }
-
-        function focusBeachOnMap(beach) {
-
-            const marker = markersById.get(beach.id);
-
-            if (!marker) {
-                return;
-            }
-
-            selectedBeach = beach;
-            updateInfoPanel(beach);
-            setActiveScreen('map-screen');
-
-            if (!map.hasLayer(marker)) {
-                marker.addTo(map);
-            }
-
-            map.setView([beach.latitude, beach.longitude], 14, { animate: true });
-            marker.openPopup();
-        }
-
-        function openBeachDetails(beach) {
-            selectedBeach = beach;
-            updateDetailScreen(beach);
-            setActiveScreen('detail-screen');
-        }
-
-        navButtons.forEach(button => {
-            button.addEventListener('click', function () {
-                setActiveScreen(button.dataset.screenTarget);
-            });
-        });
-
-        searchInput.addEventListener('input', function () {
-            searchQuery = searchInput.value.trim().toLowerCase();
-            renderBeachesList();
-        });
-
-        filterChips.forEach(chip => {
-            chip.addEventListener('click', function () {
-                activeCategory = chip.dataset.category;
-
-                filterChips.forEach(button => {
-                    button.classList.toggle('active', button === chip);
+                    }
                 });
 
-                renderBeachesList();
-            });
-        });
+                layer.on('mouseover', function () {
+                    layer.bindTooltip(buildPolygonHoverContent(feature), {
+                        sticky: true,
+                        direction: 'top',
+                        opacity: 0.95
+                    }).openTooltip();
+                });
 
-        beachesList.addEventListener('click', function (event) {
-            const button = event.target.closest('[data-action]');
+                layer.on('mouseout', function () {
+                    layer.closeTooltip();
+                });
 
-            if (!button) {
-                return;
+                polygonLayers.push({ feature: feature, layer: layer });
             }
-
-            const beachId = Number(button.dataset.id);
-            const beach = beaches.find(item => item.id === beachId);
-
-            if (!beach) {
-                return;
-            }
-
-            if (button.dataset.action === 'show-on-map') {
-                focusBeachOnMap(beach);
-            }
-
-            if (button.dataset.action === 'show-details') {
-                openBeachDetails(beach);
-            }
-        });
-
-        detailBackButton.addEventListener('click', function () {
-            setActiveScreen(lastNonDetailScreen);
-        });
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
 
-        fetch('/api/beaches')
-            .then(response => response.json())
-            .then(data => {
-                beaches.push(...data);
+        fitMapToAvailableData();
+        refreshPolygonStyles();
+    }
 
-                if (beachesPolygonLayer) {
-                    beachesPolygonLayer.setStyle(function (feature) {
-                        const relatedBeaches = getRelatedBeachesForFeature(feature);
-                        const source = relatedBeaches.length > 0
-                            ? relatedBeaches[0]
-                            : (feature.properties || {});
+    function focusBeachOnMap(beach) {
+        const marker = markersById.get(beach.id);
+        if (!marker) return;
+        selectBeach(beach);
+        setActiveScreen('map-screen');
+        if (!map.hasLayer(marker)) marker.addTo(map);
+        map.setView([beach.latitude, beach.longitude], 14, { animate: true });
+        marker.openPopup();
+    }
 
-                        return getPolygonStyle(source);
-                    });
-                }
+    function openBeachDetails(beach) {
+        selectBeach(beach);
+        setActiveScreen('detail-screen');
+    }
 
-                renderMapMarkers();
-                renderBeachesList();
+    function setMapExpanded(nextState) {
+        isMapExpanded = nextState;
+        mapScreen.classList.toggle('is-map-expanded', isMapExpanded);
+        toggleMapSizeButton.textContent = isMapExpanded ? 'Свернуть карту' : 'Развернуть карту';
+        requestMapResize();
+    }
 
-                if (beaches.length > 0) {
-                    updateInfoPanel(beaches[0]);
-                }
-            })
-            .catch(error => {
-                console.error('Ошибка загрузки пляжей:', error);
-                beachesList.innerHTML = '<div class="empty-state">Не удалось загрузить данные пляжей.</div>';
-                alert('Не удалось загрузить данные пляжей');
+    navButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            setActiveScreen(button.dataset.screenTarget);
+        });
+    });
+
+    searchInput.addEventListener('input', function () {
+        searchQuery = searchInput.value.trim().toLowerCase();
+        renderBeachesList();
+    });
+
+    filterChips.forEach(chip => {
+        chip.addEventListener('click', function () {
+            activeCategory = chip.dataset.category;
+            filterChips.forEach(button => {
+                button.classList.toggle('active', button === chip);
             });
+            renderBeachesList();
+        });
+    });
 
-        fetch('/beaches-polygon.json')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('HTTP ' + response.status + ' ' + response.statusText);
-                }
+    beachesList.addEventListener('click', function (event) {
+        const button = event.target.closest('[data-action]');
+        if (!button) return;
 
-                return response.json();
-            })
-            .then(data => {
-                if (!data || (data.type !== 'FeatureCollection' && data.type !== 'Feature')) {
-                    throw new Error('Ожидался GeoJSON FeatureCollection или Feature.');
-                }
+        const beachId = Number(button.dataset.id);
+        const beach = beaches.find(item => item.id === beachId);
+        if (!beach) return;
 
-                renderBeachPolygons(data);
-            })
-            .catch(error => {
-                console.error('Ошибка загрузки GeoJSON полигонов пляжей из /sevastopol_beaches_renumbered.geojson:', error);
-            });
-            function getActiveScrollableElement() {
-                const activeScreen = document.querySelector('.screen.active');
+        if (button.dataset.action === 'show-on-map') focusBeachOnMap(beach);
+        if (button.dataset.action === 'show-details') openBeachDetails(beach);
+    });
 
-                if (
-                    activeScreen &&
-                    activeScreen.scrollHeight > activeScreen.clientHeight
-                ) {
-                    return activeScreen;
-                }
+    detailBackButton.addEventListener('click', function () {
+        setActiveScreen(lastNonDetailScreen);
+    });
 
-                return window;
+    toggleMapSizeButton.addEventListener('click', function () {
+        setMapExpanded(!isMapExpanded);
+    });
+
+    fitMapButton.addEventListener('click', function () {
+        fitMapToAvailableData();
+    });
+
+    mapScreen.addEventListener('transitionend', function (event) {
+        if (event.target === mapElement || event.target === mapScreen) {
+            map.invalidateSize();
+        }
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    renderLoadingState();
+
+    fetch('/api/beaches')
+        .then(response => response.json())
+        .then(data => {
+            beaches.push(...data);
+            if (beachesPolygonLayer) refreshPolygonStyles();
+            renderMapMarkers();
+            renderBeachesList();
+
+            if (beaches.length > 0) {
+                selectBeach(beaches[0]);
+            } else {
+                updateInfoPanel({});
             }
+        })
+        .catch(error => {
+            console.error('Ошибка загрузки пляжей:', error);
+            beachesList.innerHTML = '<div class="empty-state">Не удалось загрузить данные пляжей.</div>';
+            infoName.textContent = 'Нет данных';
+        });
 
-            function updateScrollTopButtonVisibility() {
-                const scrollable = getActiveScrollableElement();
-
-                const currentScroll = scrollable === window
-                    ? window.scrollY
-                    : scrollable.scrollTop;
-
-                scrollTopButton.classList.toggle('visible', currentScroll > 120);
+    fetch('/beaches-polygon.json')
+        .then(response => {
+            if (!response.ok) throw new Error('HTTP ' + response.status + ' ' + response.statusText);
+            return response.json();
+        })
+        .then(data => {
+            if (!data || (data.type !== 'FeatureCollection' && data.type !== 'Feature')) {
+                throw new Error('Ожидался GeoJSON FeatureCollection или Feature.');
             }
+            renderBeachPolygons(data);
+        })
+        .catch(error => {
+            console.error('Ошибка загрузки GeoJSON полигонов пляжей:', error);
+        });
 
-            screens.forEach(screen => {
-                screen.addEventListener('scroll', updateScrollTopButtonVisibility);
-            });
+    function getActiveScrollableElement() {
+        const activeScreen = document.querySelector('.screen.active');
+        if (activeScreen && activeScreen.scrollHeight > activeScreen.clientHeight) {
+            return activeScreen;
+        }
+        return window;
+    }
 
-            window.addEventListener('scroll', updateScrollTopButtonVisibility);
+    function updateScrollTopButtonVisibility() {
+        const scrollable = getActiveScrollableElement();
+        const currentScroll = scrollable === window ? window.scrollY : scrollable.scrollTop;
+        scrollTopButton.classList.toggle('visible', currentScroll > 120);
+    }
 
-            scrollTopButton.addEventListener('click', function () {
-                const scrollable = getActiveScrollableElement();
+    screens.forEach(screen => {
+        screen.addEventListener('scroll', updateScrollTopButtonVisibility);
+    });
+    window.addEventListener('scroll', updateScrollTopButtonVisibility);
 
-                if (scrollable === window) {
-                    window.scrollTo({
-                        top: 0,
-                        behavior: 'smooth'
-                    });
+    scrollTopButton.addEventListener('click', function () {
+        const scrollable = getActiveScrollableElement();
+        if (scrollable === window) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
+        scrollable.scrollTo({ top: 0, behavior: 'smooth' });
+    });
 
-                    return;
-                }
+    clearSearchButton.addEventListener('click', function () {
+        searchInput.value = '';
+        searchQuery = '';
+        renderBeachesList();
+        searchInput.focus();
+    });
 
-                scrollable.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-            });
-            clearSearchButton.addEventListener('click', function () {
-                searchInput.value = '';
-                searchQuery = '';
-                renderBeachesList();
-                searchInput.focus();
-            });
-
-            updateScrollTopButtonVisibility();
-    </script>
+    updateScrollTopButtonVisibility();
+</script>
 </body>
 </html>
