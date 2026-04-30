@@ -1352,7 +1352,7 @@
             infoName.textContent = 'Нет данных';
         });
 
-    fetch('/beaches-polygon.json')
+    fetch('/api/beach-polygons')
         .then(response => {
             if (!response.ok) throw new Error('HTTP ' + response.status + ' ' + response.statusText);
             return response.json();

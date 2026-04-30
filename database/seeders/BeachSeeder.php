@@ -9,7 +9,7 @@ class BeachSeeder extends Seeder
 {
     public function run(): void
     {
-        $path = public_path('sevastopol_beaches_renumbered.geojson');
+        $path = public_path('sevastopol_beaches.geojson');
         $content = file_get_contents($path);
         $data = json_decode($content, true);
 
@@ -25,8 +25,7 @@ class BeachSeeder extends Seeder
                 continue;
             }
 
-            // number остается уникальным по схеме БД, поэтому дублирующиеся num из источника пропускаются.
-            Beach::firstOrCreate(
+            Beach::updateOrCreate(
                 ['number' => (int) $properties['num']],
                 [
                     'name' => (string) $properties['name'],
