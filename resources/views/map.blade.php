@@ -341,6 +341,12 @@
             gap: 10px;
         }
 
+        .filter-panel {
+            position: sticky;
+            top: var(--filter-sticky-top, 78px);
+            z-index: 30;
+        }
+
         .filter-chip {
             min-height: 42px;
             padding: 10px 12px;
@@ -830,6 +836,7 @@
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
 <script>
+    const topbar = document.querySelector('.topbar');
     const mapScreen = document.getElementById('map-screen');
     const mapElement = document.getElementById('map');
     const map = L.map(mapElement).setView([44.61, 33.52], 11);
@@ -868,6 +875,7 @@
         caution: cssVariables.getPropertyValue('--status-caution').trim(),
         danger: cssVariables.getPropertyValue('--status-danger').trim()
     };
+    const polygonRelatedRadiusKm = 1;
 
     const beaches = [];
     const markersById = new Map();
@@ -1045,28 +1053,47 @@
         return turf.point([longitude, latitude]);
     }
 
-    function isBeachRelatedToPolygon(beach, feature) {
-        const beachPoint = getBeachPointFeature(beach);
-        if (!beachPoint || !feature || !feature.geometry) return false;
+    function getDistanceToPolygonKm(beachPoint, feature) {
+        if (turf.booleanPointInPolygon(beachPoint, feature)) return 0;
 
-        try {
-            if (turf.booleanPointInPolygon(beachPoint, feature)) return true;
-            const polygonOutline = turf.polygonToLine(feature);
-            const distanceToPolygonKm = turf.pointToLineDistance(
+        const polygonOutline = turf.polygonToLine(feature);
+        const lineFeatures = turf.flatten(polygonOutline).features;
+
+        return lineFeatures.reduce((minDistance, lineFeature) => {
+            const distance = turf.pointToLineDistance(
                 beachPoint,
-                polygonOutline,
+                lineFeature,
                 { units: 'kilometers' }
             );
-            return distanceToPolygonKm <= 0.4;
+            return Math.min(minDistance, distance);
+        }, Number.POSITIVE_INFINITY);
+    }
+
+    function getBeachPolygonRelation(beach, feature) {
+        const beachPoint = getBeachPointFeature(beach);
+        if (!beachPoint || !feature || !feature.geometry) return null;
+
+        try {
+            const distanceToPolygonKm = getDistanceToPolygonKm(beachPoint, feature);
+            if (!Number.isFinite(distanceToPolygonKm)) return null;
+
+            return {
+                beach: beach,
+                distanceToPolygonKm: distanceToPolygonKm
+            };
         } catch (error) {
             console.error('Ошибка сопоставления пляжа и полигона:', error);
-            return false;
+            return null;
         }
     }
 
     function getRelatedBeachesForFeature(feature) {
         if (!beaches.length) return [];
-        return beaches.filter(beach => isBeachRelatedToPolygon(beach, feature));
+        return beaches
+            .map(beach => getBeachPolygonRelation(beach, feature))
+            .filter(relation => relation && relation.distanceToPolygonKm <= polygonRelatedRadiusKm)
+            .sort((a, b) => a.distanceToPolygonKm - b.distanceToPolygonKm)
+            .map(relation => relation.beach);
     }
 
     function buildPolygonHoverContent(feature) {
@@ -1354,10 +1381,16 @@
         scrollTopButton.classList.toggle('visible', currentScroll > 120);
     }
 
+    function updateStickyFilterOffset() {
+        const topbarHeight = topbar ? topbar.getBoundingClientRect().height : 68;
+        document.documentElement.style.setProperty('--filter-sticky-top', `${Math.ceil(topbarHeight + 10)}px`);
+    }
+
     screens.forEach(screen => {
         screen.addEventListener('scroll', updateScrollTopButtonVisibility);
     });
     window.addEventListener('scroll', updateScrollTopButtonVisibility);
+    window.addEventListener('resize', updateStickyFilterOffset);
 
     scrollTopButton.addEventListener('click', function () {
         const scrollable = getActiveScrollableElement();
@@ -1375,6 +1408,7 @@
         searchInput.focus();
     });
 
+    updateStickyFilterOffset();
     updateScrollTopButtonVisibility();
 </script>
 </body>
