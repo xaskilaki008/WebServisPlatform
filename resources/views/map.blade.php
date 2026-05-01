@@ -254,11 +254,12 @@
 
         .map-toolbar {
             position: absolute;
-            z-index: 500;
+            z-index: 900;
             top: 10px;
-            left: 10px;
+            left: 58px;
             right: 10px;
             display: flex;
+            align-items: flex-start;
             justify-content: space-between;
             gap: 8px;
             pointer-events: none;
@@ -298,6 +299,13 @@
             justify-content: space-between;
             gap: 10px;
             margin-bottom: 12px;
+        }
+
+        .detail-header-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 8px;
         }
 
         .filter-panel {
@@ -428,6 +436,14 @@
             background: #12364f;
         }
 
+        .popup-actions {
+            margin-top: 10px;
+        }
+
+        .popup-detail-button {
+            width: 100%;
+        }
+
         .category-badge {
             display: inline-flex;
             align-items: center;
@@ -460,6 +476,12 @@
 
         .detail-fields {
             grid-template-columns: repeat(1, minmax(0, 1fr));
+        }
+
+        .detail-actions {
+            margin-top: 12px;
+            display: flex;
+            justify-content: flex-start;
         }
 
         .detail-field {
@@ -696,7 +718,7 @@
 
             .map-toolbar {
                 right: 8px;
-                left: 8px;
+                left: 56px;
             }
 
             .map-control-button {
@@ -860,6 +882,9 @@
     const detailLatitude = document.getElementById('detail-latitude');
     const detailLongitude = document.getElementById('detail-longitude');
     const detailBackButton = document.getElementById('detail-back-button');
+    const detailHeaderActions = document.createElement('div');
+    const detailReturnButton = document.createElement('button');
+    const detailMapButton = document.createElement('button');
     const navButtons = document.querySelectorAll('[data-screen-target]');
     const screens = document.querySelectorAll('.screen');
     const searchInput = document.getElementById('search-input');
@@ -883,6 +908,7 @@
     let beachesPolygonLayer = null;
     let selectedBeach = null;
     let lastNonDetailScreen = 'map-screen';
+    let detailReturnScreen = 'list-screen';
     let activeCategory = 'all';
     let searchQuery = '';
     let isMapExpanded = false;
@@ -971,6 +997,17 @@
         if (screenId === 'map-screen') {
             requestMapResize();
         }
+    }
+
+    function getActiveScreenId() {
+        const activeScreen = document.querySelector('.screen.active');
+        return activeScreen ? activeScreen.id : 'map-screen';
+    }
+
+    function updateDetailBackButton() {
+        detailReturnButton.textContent = detailReturnScreen === 'map-screen'
+            ? '\u041f\u0435\u0440\u0435\u0439\u0442\u0438 \u043a \u043a\u0430\u0440\u0442\u0435 \u043f\u043b\u044f\u0436\u0435\u0439'
+            : '\u041f\u0435\u0440\u0435\u0439\u0442\u0438 \u043a \u0441\u043f\u0438\u0441\u043a\u0443 \u043f\u043b\u044f\u0436\u0435\u0439';
     }
 
     function buildPopupContent(beach) {
@@ -1191,6 +1228,10 @@
                 selectBeach(beach);
             });
 
+            marker.on('popupopen', function (event) {
+                addDetailsButtonToPopup(event.popup, beach);
+            });
+
             markersById.set(beach.id, marker);
         });
 
@@ -1263,9 +1304,32 @@
         marker.openPopup();
     }
 
-    function openBeachDetails(beach) {
+    function openBeachDetails(beach, sourceScreenId = null) {
+        const originScreenId = sourceScreenId || getActiveScreenId();
+        lastNonDetailScreen = originScreenId;
+        detailReturnScreen = originScreenId === 'list-screen' ? 'map-screen' : 'list-screen';
+        updateDetailBackButton();
         selectBeach(beach);
         setActiveScreen('detail-screen');
+    }
+
+    function addDetailsButtonToPopup(popup, beach) {
+        const content = popup.getElement();
+        if (!content || content.querySelector('.popup-detail-button')) return;
+
+        const actions = document.createElement('div');
+        actions.className = 'popup-actions';
+
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'action-button primary popup-detail-button';
+        button.dataset.action = 'show-details';
+        button.dataset.id = beach.id;
+        button.textContent = '\u041a\u0430\u0440\u0442\u043e\u0447\u043a\u0430 \u043f\u043b\u044f\u0436\u0430';
+
+        actions.appendChild(button);
+        const popupContent = content.querySelector('.leaflet-popup-content');
+        if (popupContent) popupContent.appendChild(actions);
     }
 
     function setMapExpanded(nextState) {
@@ -1274,6 +1338,26 @@
         toggleMapSizeButton.textContent = isMapExpanded ? 'Свернуть карту' : 'Развернуть карту';
         requestMapResize();
     }
+
+    detailHeaderActions.className = 'detail-header-actions';
+    detailBackButton.textContent = '\u041d\u0430\u0437\u0430\u0434';
+    detailReturnButton.type = 'button';
+    detailReturnButton.id = 'detail-return-button';
+    detailReturnButton.className = 'back-button';
+    detailBackButton.parentNode.insertBefore(detailHeaderActions, detailBackButton);
+    detailHeaderActions.appendChild(detailBackButton);
+    detailHeaderActions.appendChild(detailReturnButton);
+    updateDetailBackButton();
+
+    detailMapButton.type = 'button';
+    detailMapButton.id = 'detail-map-button';
+    detailMapButton.className = 'action-button primary';
+    detailMapButton.textContent = '\u041d\u0430 \u043a\u0430\u0440\u0442\u0435';
+
+    const detailActions = document.createElement('div');
+    detailActions.className = 'detail-actions';
+    detailActions.appendChild(detailMapButton);
+    document.querySelector('.detail-card').appendChild(detailActions);
 
     navButtons.forEach(button => {
         button.addEventListener('click', function () {
@@ -1305,11 +1389,31 @@
         if (!beach) return;
 
         if (button.dataset.action === 'show-on-map') focusBeachOnMap(beach);
-        if (button.dataset.action === 'show-details') openBeachDetails(beach);
+        if (button.dataset.action === 'show-details') openBeachDetails(beach, 'list-screen');
+    });
+
+    mapElement.addEventListener('click', function (event) {
+        const button = event.target.closest('[data-action="show-details"]');
+        if (!button) return;
+
+        const beachId = Number(button.dataset.id);
+        const beach = beaches.find(item => item.id === beachId);
+        if (!beach) return;
+
+        openBeachDetails(beach, 'map-screen');
     });
 
     detailBackButton.addEventListener('click', function () {
         setActiveScreen(lastNonDetailScreen);
+    });
+
+    detailReturnButton.addEventListener('click', function () {
+        setActiveScreen(detailReturnScreen);
+    });
+
+    detailMapButton.addEventListener('click', function () {
+        if (!selectedBeach) return;
+        focusBeachOnMap(selectedBeach);
     });
 
     toggleMapSizeButton.addEventListener('click', function () {
