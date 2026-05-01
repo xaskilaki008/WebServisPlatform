@@ -81,7 +81,7 @@
 
         .topbar-subtitle {
             margin: 2px 0 0;
-            color: var(--text-soft);
+            color: #0b669c;
             font-size: 13px;
         }
 
@@ -229,7 +229,7 @@
         .legend-meta {
             margin: 0 0 10px;
             font-size: 13px;
-            color: var(--text-soft);
+            color: #0b669c;
         }
 
         .legend-image {
@@ -244,7 +244,6 @@
         .map-card {
             min-width: 0;
             border: 1px solid var(--border);
-            border-radius: var(--radius-xl);
             overflow: hidden;
             box-shadow: var(--shadow-strong);
             background: var(--surface);
@@ -756,7 +755,7 @@
         <div class="topbar-inner">
             <div class="topbar-title-wrap">
                 <h1 class="topbar-title">Мониторинг пляжей Севастополя</h1>
-                <p class="topbar-subtitle">Оценка условий купания и геозон по уровню волнения</p>
+                <p class="topbar-subtitle">Будьте в курсе доступности пляжей любимого моря</p>
             </div>
             <div class="topbar-nav">
                 <button type="button" class="nav-button active" data-screen-target="map-screen">Карта</button>
@@ -785,7 +784,7 @@
 
                     <div class="panel legend-panel">
                         <h3>Легенда статусов</h3>
-                        <p class="legend-meta">Маркер, карточка и полигон связаны единым цветом категории безопасности.</p>
+                        <p class="legend-meta">Флажок и полигон связаны единым цветом категории безопасности.</p>
                         <img class="legend-image" src="{{ asset('./flag-colors.png') }}" alt="Цвета флажков">
                     </div>
                 </aside>
@@ -836,7 +835,7 @@
                     <h2 class="screen-title">Подробная информация</h2>
                     <p class="screen-subtitle">Детальная карточка выбранного пляжа и его текущего статуса.</p>
                 </div>
-                <button type="button" id="detail-back-button" class="back-button">Назад</button>
+                <button type="button" id="detail-back-button" class="back-button">back Назад</button>
             </div>
             <article class="detail-card">
                 <h2 id="detail-name">Пляж не выбран</h2>
@@ -997,6 +996,11 @@
         if (screenId === 'map-screen') {
             requestMapResize();
         }
+
+        if (screenId === 'list-screen') {
+            syncSearchStateFromInput();
+            renderBeachesList();
+        }
     }
 
     function getActiveScreenId() {
@@ -1008,6 +1012,10 @@
         detailReturnButton.textContent = detailReturnScreen === 'map-screen'
             ? '\u041f\u0435\u0440\u0435\u0439\u0442\u0438 \u043a \u043a\u0430\u0440\u0442\u0435 \u043f\u043b\u044f\u0436\u0435\u0439'
             : '\u041f\u0435\u0440\u0435\u0439\u0442\u0438 \u043a \u0441\u043f\u0438\u0441\u043a\u0443 \u043f\u043b\u044f\u0436\u0435\u0439';
+    }
+
+    function syncSearchStateFromInput() {
+        searchQuery = searchInput.value.trim().toLowerCase();
     }
 
     function buildPopupContent(beach) {
@@ -1366,7 +1374,7 @@
     });
 
     searchInput.addEventListener('input', function () {
-        searchQuery = searchInput.value.trim().toLowerCase();
+        syncSearchStateFromInput();
         renderBeachesList();
     });
 
