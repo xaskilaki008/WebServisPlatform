@@ -1220,7 +1220,7 @@
         if (!map.hasLayer(marker)) {
             marker.addTo(map);
         }
-        marker.openPopup();
+        openBeachPopup(marker, beach);
     }
 
     function renderMapMarkers() {
@@ -1307,9 +1307,13 @@
         if (!marker) return;
         selectBeach(beach);
         setActiveScreen('map-screen');
-        if (!map.hasLayer(marker)) marker.addTo(map);
-        map.setView([beach.latitude, beach.longitude], 14, { animate: true });
-        marker.openPopup();
+
+        window.setTimeout(() => {
+            map.invalidateSize();
+            if (!map.hasLayer(marker)) marker.addTo(map);
+            map.setView([beach.latitude, beach.longitude], 14, { animate: true });
+            openBeachPopup(marker, beach);
+        }, 100);
     }
 
     function openBeachDetails(beach, sourceScreenId = null) {
@@ -1338,6 +1342,15 @@
         actions.appendChild(button);
         const popupContent = content.querySelector('.leaflet-popup-content');
         if (popupContent) popupContent.appendChild(actions);
+    }
+
+    function openBeachPopup(marker, beach) {
+        marker.setPopupContent(buildPopupContent(beach));
+        marker.openPopup();
+
+        [0, 100].forEach(delay => window.setTimeout(() => {
+            addDetailsButtonToPopup(marker.getPopup(), beach);
+        }, delay));
     }
 
     function setMapExpanded(nextState) {
