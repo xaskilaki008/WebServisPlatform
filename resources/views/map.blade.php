@@ -1282,11 +1282,16 @@
     }
 
     function buildPolygonHoverContent(feature) {
-        if (!beaches.length) return '<strong>Связанные пляжи</strong><br>Данные пляжей еще загружаются';
+        // Создаем аккуратный заголовок с линией, используя цвета из твоего CSS
+        const header = '<div style="font-weight: 700; color: #0b669c;">Связанные пляжи</div><hr style="margin: 6px 0; border: none; border-top: 1px solid #cedceb;">';
+
+        if (!beaches.length) return header + 'Данные пляжей еще загружаются';
+        
         const relatedBeaches = getRelatedBeachesForFeature(feature);
-        if (relatedBeaches.length === 0) return '<strong>Связанные пляжи</strong><br>Пляжи не найдены';
-        return '<strong>Связанные пляжи</strong><br>' + relatedBeaches.map(beach => beach.name || 'Без названия').join('<br>');
-    }
+        if (relatedBeaches.length === 0) return header + 'Пляжи не найдены';
+        
+        return header + relatedBeaches.map(beach => beach.name || 'Без названия').join('<br>');
+    }
 
     function refreshPolygonStyles() {
         polygonLayers.forEach(entry => {
@@ -1329,7 +1334,7 @@
             const selectedClass = selectedBeach && selectedBeach.id === beach.id ? ' selected' : '';
             return `
                 <article class="list-card${selectedClass}">
-                    <div class="list-id">Пляж №${beach.number ?? '-'}</div>
+                    <div class="list-id">${beach.number ?? '-'}</div>
                     <h3>${beach.name || 'Без названия'}</h3>
                     <p class="list-meta"><strong>Волнение:</strong> ${beach.wave_level ?? '-'} (${getWaveLevelText(beach.wave_level)})</p>
                     <span class="category-badge ${getCategoryBadgeClass(beach)}">${getBeachCategoryLabel(beach)}</span>
