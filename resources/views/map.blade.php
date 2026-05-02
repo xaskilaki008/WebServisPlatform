@@ -108,6 +108,7 @@
         .nav-button,
         .action-button,
         .back-button,
+        .detail-geo-button,
         .filter-chip,
         .map-control-button,
         .clear-search-button {
@@ -135,6 +136,7 @@
         .nav-button:focus-visible,
         .action-button:focus-visible,
         .back-button:focus-visible,
+        .detail-geo-button:focus-visible,
         .filter-chip:focus-visible,
         .search-input:focus-visible,
         .map-control-button:focus-visible,
@@ -372,18 +374,48 @@
 
         .list-wrap {
             grid-template-columns: repeat(1, minmax(0, 1fr));
+            overflow: visible;
         }
 
         .list-card {
+            position: relative;
             display: grid;
             gap: 8px;
             min-height: 188px;
-            transition: box-shadow var(--transition), transform var(--transition), border-color var(--transition);
+            isolation: isolate;
+            overflow: visible;
+            transition: box-shadow var(--transition), border-color var(--transition);
+        }
+
+        .list-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            border-radius: inherit;
+            background:
+                linear-gradient(115deg, transparent 0%, transparent 38%, rgba(255, 255, 255, 0.82) 50%, transparent 62%, transparent 100%),
+                var(--surface);
+            background-size: 240% 100%, 100% 100%;
+            border: 1px solid transparent;
+            opacity: 0;
+            transform: scale(1);
+            box-shadow: var(--shadow-soft);
+            transition: transform 0.5s ease, opacity 0.2s ease, border-color var(--transition), box-shadow var(--transition);
         }
 
         .list-card:hover {
             border-color: #9fc4de;
-            transform: translateY(-1px);
+            z-index: 5;
+            box-shadow: none;
+        }
+
+        .list-card:hover::before {
+            opacity: 1;
+            transform: scale(1.2);
+            border-color: #9fc4de;
+            box-shadow: 0 18px 36px rgba(13, 40, 61, 0.2);
+            animation: card-shimmer 0.5s ease;
         }
 
         .list-card.selected {
@@ -395,6 +427,25 @@
             margin: 0;
             font-size: 16px;
             line-height: 1.35;
+            width: fit-content;
+            max-width: 100%;
+            cursor: help;
+            transform-origin: left center;
+            transition: transform 0.5s ease, color var(--transition);
+        }
+
+        .list-card:hover h3 {
+            color: #0a5f92;
+            transform: scale(1.18);
+        }
+
+        @keyframes card-shimmer {
+            0% {
+                background-position: 140% 0, 0 0;
+            }
+            100% {
+                background-position: -80% 0, 0 0;
+            }
         }
 
         .list-id {
@@ -471,6 +522,90 @@
 
         .detail-card h2 {
             margin-bottom: 12px;
+        }
+
+        .detail-title-row {
+            display: grid;
+            grid-template-columns: minmax(42px, 1fr) auto minmax(42px, 1fr);
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .detail-title-row h2 {
+            grid-column: 2;
+            margin: 0;
+            text-align: center;
+            font-size: clamp(24px, 4vw, 36px);
+            line-height: 1.15;
+        }
+
+        .detail-geo-wrap {
+            grid-column: 3;
+            justify-self: start;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            width: max-content;
+        }
+
+        .detail-geo-button {
+            width: 44px;
+            height: 44px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            appearance: none;
+            -webkit-appearance: none;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            outline: none;
+        }
+
+        .detail-geo-button img {
+            width: 44px;
+            height: 44px;
+            object-fit: contain;
+            display: block;
+            border-radius: 0;
+            box-shadow: none;
+            transition: transform var(--transition), opacity var(--transition);
+        }
+
+        .detail-geo-wrap:hover .detail-geo-button img {
+            transform: translate(-8px, -1px);
+            opacity: 0.9;
+        }
+
+        .detail-coordinates {
+            position: absolute;
+            left: 42px;
+            top: 50%;
+            transform: translateY(-50%) translateX(-6px);
+            min-width: max-content;
+            padding: 8px 10px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            background: #fff;
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 650;
+            box-shadow: 0 10px 22px rgba(13, 40, 61, 0.18);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            cursor: pointer;
+            transition: opacity var(--transition), transform var(--transition), visibility var(--transition);
+            z-index: 10;
+        }
+
+        .detail-geo-wrap:hover .detail-coordinates {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: translateY(-50%) translateX(0);
         }
 
         .detail-fields {
@@ -846,6 +981,11 @@
                     <div class="detail-field"><strong>Категория:</strong> <span id="detail-category">-</span></div>
                     <div class="detail-field"><strong>Широта:</strong> <span id="detail-latitude">-</span></div>
                     <div class="detail-field"><strong>Долгота:</strong> <span id="detail-longitude">-</span></div>
+                    <pre>
+                        Заметки:
+                        -тут убрать широту, долготу,
+                        -добавить высоту, период, скорость ветра м/c (сильная волна - 0-0.5, средняя волна - 0.5-1.2, сильная волна - 1.2 - 1.5)
+                    </pre>
                 </div>
             </article>
         </section>
@@ -881,6 +1021,8 @@
     const detailLatitude = document.getElementById('detail-latitude');
     const detailLongitude = document.getElementById('detail-longitude');
     const detailBackButton = document.getElementById('detail-back-button');
+    const detailTitleRow = document.createElement('div');
+    const detailGeoButton = document.createElement('button');
     const detailHeaderActions = document.createElement('div');
     const detailReturnButton = document.createElement('button');
     const detailMapButton = document.createElement('button');
@@ -911,6 +1053,7 @@
     let activeCategory = 'all';
     let searchQuery = '';
     let isMapExpanded = false;
+    let mapFocusRequestId = 0;
 
     function getWaveLevelText(level) {
         const numericLevel = Number(level);
@@ -972,6 +1115,7 @@
         detailCategory.textContent = getBeachCategoryLabel(beach);
         detailLatitude.textContent = beach.latitude ?? '-';
         detailLongitude.textContent = beach.longitude ?? '-';
+        detailMapButton.dataset.id = beach.id ?? '';
     }
 
     function requestMapResize() {
@@ -1201,6 +1345,10 @@
             `;
         }).join('');
 
+        beachesList.querySelectorAll('.list-card h3').forEach(title => {
+            title.setAttribute('title', '\u043f\u0435\u0440\u0435\u0439\u0442\u0438 \u043a \u043f\u043b\u044f\u0436\u0443');
+        });
+
         refreshMarkerVisibility();
     }
 
@@ -1303,17 +1451,46 @@
     }
 
     function focusBeachOnMap(beach) {
-        const marker = markersById.get(beach.id);
+        const beachId = Number(beach.id);
+        const currentBeach = beaches.find(item => item.id === beachId) || beach;
+        const marker = markersById.get(currentBeach.id);
         if (!marker) return;
-        selectBeach(beach);
+        const latitude = Number(currentBeach.latitude);
+        const longitude = Number(currentBeach.longitude);
+        if (Number.isNaN(latitude) || Number.isNaN(longitude)) return;
+
+        const focusRequestId = ++mapFocusRequestId;
+        const targetLatLng = [latitude, longitude];
+
+        selectBeach(currentBeach);
         setActiveScreen('map-screen');
 
         window.setTimeout(() => {
-            map.invalidateSize();
+            if (focusRequestId !== mapFocusRequestId) return;
+            map.stop();
+            map.closePopup();
             if (!map.hasLayer(marker)) marker.addTo(map);
-            map.setView([beach.latitude, beach.longitude], 14, { animate: true });
-            openBeachPopup(marker, beach);
-        }, 100);
+
+            map.invalidateSize(true);
+            map.setView(targetLatLng, 15, { animate: false });
+
+            window.requestAnimationFrame(() => {
+                if (focusRequestId !== mapFocusRequestId) return;
+                map.invalidateSize(true);
+                map.setView(targetLatLng, 15, { animate: true });
+
+                window.setTimeout(() => {
+                    if (focusRequestId !== mapFocusRequestId) return;
+                    openBeachPopup(marker, currentBeach);
+
+                    window.setTimeout(() => {
+                        if (focusRequestId !== mapFocusRequestId) return;
+                        map.invalidateSize(true);
+                        map.setView(targetLatLng, 15, { animate: false });
+                    }, 80);
+                }, 80);
+            });
+        }, 200);
     }
 
     function openBeachDetails(beach, sourceScreenId = null) {
@@ -1369,6 +1546,15 @@
     detailHeaderActions.appendChild(detailBackButton);
     detailHeaderActions.appendChild(detailReturnButton);
     updateDetailBackButton();
+
+    detailTitleRow.className = 'detail-title-row';
+    detailGeoButton.type = 'button';
+    detailGeoButton.className = 'detail-geo-button';
+    detailGeoButton.title = '\u041d\u0430 \u043a\u0430\u0440\u0442\u0435';
+    detailGeoButton.innerHTML = '<img src="/map%20generated%20image.png" alt="">';
+    detailName.parentNode.insertBefore(detailTitleRow, detailName);
+    detailTitleRow.appendChild(detailName);
+    detailTitleRow.appendChild(detailGeoButton);
 
     detailMapButton.type = 'button';
     detailMapButton.id = 'detail-map-button';
@@ -1432,9 +1618,19 @@
         setActiveScreen(detailReturnScreen);
     });
 
+    function focusCurrentDetailBeachOnMap() {
+        const beachId = Number(detailMapButton.dataset.id);
+        const beach = beaches.find(item => item.id === beachId);
+        if (!beach) return;
+        focusBeachOnMap(beach);
+    }
+
     detailMapButton.addEventListener('click', function () {
-        if (!selectedBeach) return;
-        focusBeachOnMap(selectedBeach);
+        focusCurrentDetailBeachOnMap();
+    });
+
+    detailGeoButton.addEventListener('click', function () {
+        focusCurrentDetailBeachOnMap();
     });
 
     toggleMapSizeButton.addEventListener('click', function () {
