@@ -435,7 +435,6 @@
         }
 
         .list-card:hover h3 {
-            color: #0a5f92;
             transform: scale(1.18);
         }
 
@@ -979,8 +978,6 @@
                     <div class="detail-field"><strong>Уровень волнения:</strong> <span id="detail-wave-level">-</span></div>
                     <div class="detail-field"><strong>Описание волнения:</strong> <span id="detail-wave-text">Нет данных</span></div>
                     <div class="detail-field"><strong>Категория:</strong> <span id="detail-category">-</span></div>
-                    <div class="detail-field"><strong>Широта:</strong> <span id="detail-latitude">-</span></div>
-                    <div class="detail-field"><strong>Долгота:</strong> <span id="detail-longitude">-</span></div>
                     <pre>
                         Заметки:
                         -тут убрать широту, долготу,
@@ -1019,8 +1016,6 @@
     const detailWaveLevel = document.getElementById('detail-wave-level');
     const detailWaveText = document.getElementById('detail-wave-text');
     const detailCategory = document.getElementById('detail-category');
-    const detailLatitude = document.getElementById('detail-latitude');
-    const detailLongitude = document.getElementById('detail-longitude');
     const detailBackButton = document.getElementById('detail-back-button');
     const detailTitleRow = document.createElement('div');
     const detailGeoWrap = document.createElement('div');
@@ -1116,8 +1111,6 @@
         detailWaveLevel.textContent = beach.wave_level ?? '-';
         detailWaveText.textContent = getWaveLevelText(beach.wave_level);
         detailCategory.textContent = getBeachCategoryLabel(beach);
-        detailLatitude.textContent = beach.latitude ?? '-';
-        detailLongitude.textContent = beach.longitude ?? '-';
         detailMapButton.dataset.id = beach.id ?? '';
         const hasCoordinates = beach.latitude !== undefined && beach.latitude !== null && beach.longitude !== undefined && beach.longitude !== null;
         detailCoordinates.textContent = hasCoordinates ? `${beach.latitude}, ${beach.longitude}` : '-';
