@@ -911,9 +911,6 @@
                             <div class="info-row"><b>Описание</b><span id="info-wave-text">Нет данных</span></div>
                             <div class="info-row"><b>Категория</b><span id="info-category-badge" class="category-inline category-badge">-</span></div>
                         </div>
-                        <p class="info-note">
-                            Цвета статусов соответствуют диапазонам: <strong>0-2</strong> / <strong>3-5</strong> / <strong>6+</strong>.
-                        </p>
                     </div>
 
                     <div class="panel legend-panel">
@@ -1560,16 +1557,6 @@
     detailGeoWrap.appendChild(detailGeoButton);
     detailGeoWrap.appendChild(detailCoordinates);
     detailTitleRow.appendChild(detailGeoWrap);
-
-    detailMapButton.type = 'button';
-    detailMapButton.id = 'detail-map-button';
-    detailMapButton.className = 'action-button primary';
-    detailMapButton.textContent = '\u041d\u0430 \u043a\u0430\u0440\u0442\u0435';
-
-    const detailActions = document.createElement('div');
-    detailActions.className = 'detail-actions';
-    detailActions.appendChild(detailMapButton);
-    document.querySelector('.detail-card').appendChild(detailActions);
 
     navButtons.forEach(button => {
         button.addEventListener('click', function () {
