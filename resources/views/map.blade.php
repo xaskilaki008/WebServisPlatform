@@ -984,7 +984,8 @@
                     <pre>
                         Заметки:
                         -тут убрать широту, долготу,
-                        -добавить высоту, период, скорость ветра м/c (сильная волна - 0-0.5, средняя волна - 0.5-1.2, сильная волна - 1.2 - 1.5)
+                        -добавить высоту, период, скорость ветра м/c (слабое волнение - 0-0.5, средняя волна - 0.5-1.2, сильная волна - 1.2 - 1.5),температура воды
+                        -Добавить ссылку на внешний прогноз погоды
                     </pre>
                 </div>
             </article>
@@ -1022,7 +1023,9 @@
     const detailLongitude = document.getElementById('detail-longitude');
     const detailBackButton = document.getElementById('detail-back-button');
     const detailTitleRow = document.createElement('div');
+    const detailGeoWrap = document.createElement('div');
     const detailGeoButton = document.createElement('button');
+    const detailCoordinates = document.createElement('button');
     const detailHeaderActions = document.createElement('div');
     const detailReturnButton = document.createElement('button');
     const detailMapButton = document.createElement('button');
@@ -1116,6 +1119,9 @@
         detailLatitude.textContent = beach.latitude ?? '-';
         detailLongitude.textContent = beach.longitude ?? '-';
         detailMapButton.dataset.id = beach.id ?? '';
+        const hasCoordinates = beach.latitude !== undefined && beach.latitude !== null && beach.longitude !== undefined && beach.longitude !== null;
+        detailCoordinates.textContent = hasCoordinates ? `${beach.latitude}, ${beach.longitude}` : '-';
+        detailCoordinates.dataset.coordinates = hasCoordinates ? `${beach.latitude}, ${beach.longitude}` : '';
     }
 
     function requestMapResize() {
@@ -1548,13 +1554,19 @@
     updateDetailBackButton();
 
     detailTitleRow.className = 'detail-title-row';
+    detailGeoWrap.className = 'detail-geo-wrap';
     detailGeoButton.type = 'button';
     detailGeoButton.className = 'detail-geo-button';
-    detailGeoButton.title = '\u041d\u0430 \u043a\u0430\u0440\u0442\u0435';
+    detailGeoButton.title = '\u043d\u0430 \u043a\u0430\u0440\u0442\u0435';
     detailGeoButton.innerHTML = '<img src="/map%20generated%20image.png" alt="">';
+    detailCoordinates.type = 'button';
+    detailCoordinates.className = 'detail-coordinates';
+    detailCoordinates.title = '\u0441\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u043a\u043e\u043e\u0440\u0434\u0438\u043d\u0430\u0442\u044b';
     detailName.parentNode.insertBefore(detailTitleRow, detailName);
     detailTitleRow.appendChild(detailName);
-    detailTitleRow.appendChild(detailGeoButton);
+    detailGeoWrap.appendChild(detailGeoButton);
+    detailGeoWrap.appendChild(detailCoordinates);
+    detailTitleRow.appendChild(detailGeoWrap);
 
     detailMapButton.type = 'button';
     detailMapButton.id = 'detail-map-button';
@@ -1631,6 +1643,23 @@
 
     detailGeoButton.addEventListener('click', function () {
         focusCurrentDetailBeachOnMap();
+    });
+
+    detailCoordinates.addEventListener('click', function () {
+        const coordinates = detailCoordinates.dataset.coordinates;
+        if (!coordinates) return;
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(coordinates);
+            return;
+        }
+
+        const tempInput = document.createElement('input');
+        tempInput.value = coordinates;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        tempInput.remove();
     });
 
     toggleMapSizeButton.addEventListener('click', function () {
