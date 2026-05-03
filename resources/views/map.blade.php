@@ -256,14 +256,26 @@
         .map-toolbar {
             position: absolute;
             z-index: 900;
-            top: 10px;
-            left: 58px;
+            /* Опускаем тулбар ниже стандартных кнопок масштаба Leaflet */
+            top: 90px; 
             right: 10px;
+            /* Убираем left, чтобы тулбар не растягивался на всю ширину */
+            left: auto; 
+            
             display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
+            /* Выстраиваем элементы в колонку */
+            flex-direction: column; 
+            align-items: flex-end;
             gap: 8px;
             pointer-events: none;
+        }
+
+        /* Убираем лишние отступы у групп, если они мешают */
+        .map-toolbar-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            pointer-events: auto;
         }
 
         .map-toolbar-group {
@@ -988,7 +1000,8 @@
     const topbar = document.querySelector('.topbar');
     const mapScreen = document.getElementById('map-screen');
     const mapElement = document.getElementById('map');
-    const map = L.map(mapElement).setView([44.61, 33.52], 11);
+    const map = L.map(mapElement).setView([44.61, 33.52], 11);
+    map.zoomControl.setPosition('topright');
     map.createPane('beachPolygonsPane');
     map.getPane('beachPolygonsPane').style.zIndex = '350';
     map.getPane('beachPolygonsPane').style.pointerEvents = 'auto';
