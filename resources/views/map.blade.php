@@ -974,12 +974,6 @@
                     <div class="detail-field"><strong>Уровень волнения:</strong> <span id="detail-wave-level">-</span></div>
                     <div class="detail-field"><strong>Описание волнения:</strong> <span id="detail-wave-text">Нет данных</span></div>
                     <div class="detail-field"><strong>Категория:</strong> <span id="detail-category">-</span></div>
-                    <pre>
-                        Заметки:
-                        -тут убрать широту, долготу,
-                        -добавить высоту, период, скорость ветра м/c (слабое волнение - 0-0.5, средняя волна - 0.5-1.2, сильная волна - 1.2 - 1.5),температура воды
-                        -Добавить ссылку на внешний прогноз погоды
-                    </pre>
                 </div>
             </article>
         </section>
