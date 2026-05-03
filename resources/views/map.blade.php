@@ -81,7 +81,7 @@
 
         .topbar-subtitle {
             margin: 2px 0 0;
-            color: #0b669c;
+            color: #173042;
             font-size: 13px;
         }
 
@@ -141,7 +141,7 @@
         .search-input:focus-visible,
         .map-control-button:focus-visible,
         .clear-search-button:focus-visible {
-            outline: 2px solid rgba(14, 129, 198, 0.26);
+            outline: 2px solid rgba(15, 131, 203, 0.48);
             outline-offset: 2px;
         }
 
@@ -937,8 +937,7 @@
         <section id="list-screen" class="screen">
             <div class="screen-header">
                 <div>
-                    <h2 class="screen-title">Список пляжей <span id="results-counter" class="counter-badge">0</span></h2>
-                    <p class="screen-subtitle">Быстрый поиск, фильтрация по статусам и переход к объекту на карте.</p>
+                    <h2 class="screen-title">Найдено пляжей: <span id="results-counter" class="counter-badge">0</span></h2>
                 </div>
             </div>
 
@@ -1036,7 +1035,7 @@
         caution: cssVariables.getPropertyValue('--status-caution').trim(),
         danger: cssVariables.getPropertyValue('--status-danger').trim()
     };
-    const polygonRelatedRadiusKm = 1;
+    const polygonRelatedRadiusKm = 0.2;
 
     const beaches = [];
     const markersById = new Map();
