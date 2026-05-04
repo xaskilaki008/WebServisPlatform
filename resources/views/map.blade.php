@@ -801,10 +801,11 @@
 
         @media (min-width: 1120px) {
             .map-layout {
-                grid-template-columns: minmax(280px, 320px) 1fr;
-                gap: 16px;
+                    /* Если удалил aside целиком, ставь 1fr. 
+                    Если оставил легенду, можно оставить 320px или уменьшить */
+                    grid-template-columns: 1fr; 
+                    gap: 16px;
             }
-
             .left-column {
                 position: sticky;
                 top: 86px;
@@ -916,6 +917,17 @@
     <main class="page-body">
         <section id="map-screen" class="screen active">
             <div class="map-layout">
+                <section class="map-card">
+                    <div class="map-toolbar">
+                        <div class="map-toolbar-group">
+                            <button id="fit-map-button" type="button" class="map-control-button">Показать все</button>
+                        </div>
+                        <div class="map-toolbar-group">
+                            <button id="toggle-map-size-button" type="button" class="map-control-button">Развернуть карту</button>
+                        </div>
+                    </div>
+                    <div id="map"></div>
+                </section>
                 <aside class="left-column">
                     <!-- <div id="info-panel" class="panel">
                         <h2>Текущий пляж</h2>
@@ -934,18 +946,6 @@
                         <img class="legend-image" src="{{ asset('./flag-colors.png') }}" alt="Цвета флажков">
                     </div>
                 </aside>
-
-                <section class="map-card">
-                    <div class="map-toolbar">
-                        <div class="map-toolbar-group">
-                            <button id="fit-map-button" type="button" class="map-control-button">Показать все</button>
-                        </div>
-                        <div class="map-toolbar-group">
-                            <button id="toggle-map-size-button" type="button" class="map-control-button">Развернуть карту</button>
-                        </div>
-                    </div>
-                    <div id="map"></div>
-                </section>
             </div>
         </section>
 
@@ -1168,11 +1168,23 @@
     }
 
     function buildPopupContent(beach) {
-        return '<b>' + (beach.name || 'Без названия') + '</b><br>' +
-            'Номер: ' + (beach.number ?? '-') + '<br>' +
-            'Уровень волнения: ' + (beach.wave_level ?? '-') + '<br>' +
-            'Описание: ' + getWaveLevelText(beach.wave_level) + '<br>' +
-            'Категория: ' + getBeachCategoryLabel(beach);
+        const categoryClass = getCategoryBadgeClass(beach);
+        const categoryLabel = getBeachCategoryLabel(beach);
+        
+        return `
+            <div style="min-width: 160px;">
+                <b style="font-size: 14px;">${beach.name || 'Без названия'}</b><br>
+                <div style="margin: 5px 0 8px 0;">
+                    <span class="category-badge ${categoryClass}" style="font-size: 10px; padding: 4px 8px;">
+                        ${categoryLabel}
+                    </span>
+                </div>
+                <div style="font-size: 12px; line-height: 1.4;">
+                    <b>Номер:</b> ${beach.number ?? '-'}<br>
+                    <b>Волнение:</b> ${beach.wave_level ?? '-'} (${getWaveLevelText(beach.wave_level)})
+                </div>
+            </div>
+        `;
     }
 
     function buildPolygonPopupContent(properties = {}) {
