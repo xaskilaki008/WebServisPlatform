@@ -885,6 +885,9 @@
                 grid-template-columns: 1fr;
                 gap: 2px;
             }
+            .filter-panel {
+                position: static; 
+            }
         }
 
         @media (prefers-reduced-motion: reduce) {
