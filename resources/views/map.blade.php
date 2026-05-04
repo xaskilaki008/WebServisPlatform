@@ -917,7 +917,7 @@
         <section id="map-screen" class="screen active">
             <div class="map-layout">
                 <aside class="left-column">
-                    <div id="info-panel" class="panel">
+                    <!-- <div id="info-panel" class="panel">
                         <h2>Текущий пляж</h2>
                         <div class="info-grid">
                             <div class="info-row"><b>Название</b><span id="info-name">Загрузка...</span></div>
@@ -926,7 +926,7 @@
                             <div class="info-row"><b>Описание</b><span id="info-wave-text">Нет данных</span></div>
                             <div class="info-row"><b>Категория</b><span id="info-category-badge" class="category-inline category-badge">-</span></div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <div class="panel legend-panel">
                         <h3>Легенда статусов</h3>
@@ -1009,11 +1009,11 @@
     map.getPane('beachPolygonsPane').style.zIndex = '350';
     map.getPane('beachPolygonsPane').style.pointerEvents = 'auto';
 
-    const infoName = document.getElementById('info-name');
-    const infoNumber = document.getElementById('info-number');
-    const infoWaveLevel = document.getElementById('info-wave-level');
-    const infoWaveText = document.getElementById('info-wave-text');
-    const infoCategoryBadge = document.getElementById('info-category-badge');
+    // const infoName = document.getElementById('info-name');
+    // const infoNumber = document.getElementById('info-number');
+    // const infoWaveLevel = document.getElementById('info-wave-level');
+    // const infoWaveText = document.getElementById('info-wave-text');
+    // const infoCategoryBadge = document.getElementById('info-category-badge');
 
     const beachesList = document.getElementById('beaches-list');
     const resultsCounter = document.getElementById('results-counter');
